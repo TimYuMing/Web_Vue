@@ -1,0 +1,17 @@
+[
+  {
+    "Name": "新增設定檔",
+    "Projects": [
+      {
+        "Path": "web_vue.client\\web_vue.client.esproj",
+        "Action": "Start",
+        "DebugTarget": "localhost (Chrome)"
+      },
+      {
+        "Path": "Web_Vue.Server\\Web_Vue.Server.csproj",
+        "Action": "Start",
+        "DebugTarget": "IIS Express"
+      }
+    ]
+  }
+]
