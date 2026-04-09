@@ -1,7 +1,7 @@
 <template>
   <div class="weather-component">
     <h1>Weather forecast</h1>
-    <p>This component demonstrates fetching data from the server.2</p>
+    <p>This component demonstrates fetching data from the server.23</p>
 
     <div v-if="pending" class="loading">
       Loading...
