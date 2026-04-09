@@ -1,0 +1,6 @@
+@Web_Vue.Server_HostAddress = http://localhost:5074
+
+GET {{Web_Vue.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
