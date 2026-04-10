@@ -1,0 +1,146 @@
+/* ========================================
+   前台 (Frontend) 全域樣式
+   ======================================== */
+
+/* CSS 變數 */
+:root {
+  /* 主色調 */
+  --front-primary: #4f46e5;
+  --front-primary-hover: #4338ca;
+  --front-primary-light: #e0e7ff;
+
+  /* 中性色 */
+  --front-bg: #ffffff;
+  --front-bg-soft: #f9fafb;
+  --front-bg-accent: #f3f4f6;
+
+  /* 文字 */
+  --front-text: #111827;
+  --front-text-muted: #6b7280;
+  --front-text-light: #9ca3af;
+
+  /* 邊框 */
+  --front-border: #e5e7eb;
+  --front-border-hover: #d1d5db;
+
+  /* 陰影 */
+  --front-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --front-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  --front-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+
+  /* 圓角 */
+  --front-radius-sm: 0.25rem;
+  --front-radius: 0.5rem;
+  --front-radius-lg: 0.75rem;
+  --front-radius-full: 9999px;
+
+  /* 版型 */
+  --front-container-width: 1200px;
+  --front-nav-height: 64px;
+  --front-footer-height: 80px;
+}
+
+/* 基礎 */
+body {
+  background-color: var(--front-bg);
+  color: var(--front-text);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+    'Noto Sans TC', sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--front-primary);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: var(--front-primary-hover);
+}
+
+/* 容器 */
+.front-container {
+  max-width: var(--front-container-width);
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* 按鈕 */
+.front-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1.25rem;
+  border-radius: var(--front-radius);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  line-height: 1.5;
+}
+
+.front-btn-primary {
+  background-color: var(--front-primary);
+  color: #fff;
+}
+
+.front-btn-primary:hover {
+  background-color: var(--front-primary-hover);
+  color: #fff;
+}
+
+.front-btn-outline {
+  background-color: transparent;
+  border: 1px solid var(--front-border);
+  color: var(--front-text);
+}
+
+.front-btn-outline:hover {
+  background-color: var(--front-bg-accent);
+  border-color: var(--front-border-hover);
+}
+
+/* 卡片 */
+.front-card {
+  background-color: var(--front-bg);
+  border: 1px solid var(--front-border);
+  border-radius: var(--front-radius-lg);
+  box-shadow: var(--front-shadow-sm);
+  padding: 1.5rem;
+}
+
+/* 段落標題 */
+.front-section-title {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: var(--front-text);
+  margin-bottom: 0.75rem;
+}
+
+.front-section-subtitle {
+  font-size: 1rem;
+  color: var(--front-text-muted);
+  margin-bottom: 2rem;
+}
+
+/* 分隔線 */
+.front-divider {
+  border: none;
+  border-top: 1px solid var(--front-border);
+  margin: 2rem 0;
+}
+
+/* RWD */
+@media (max-width: 768px) {
+  .front-container {
+    padding: 0 1rem;
+  }
+
+  .front-section-title {
+    font-size: 1.5rem;
+  }
+}

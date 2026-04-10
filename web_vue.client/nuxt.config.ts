@@ -39,7 +39,7 @@ export default defineNuxtConfig({
   ssr: true,
 
   // 全域 CSS
-  css: ['~/assets/css/main.css'],
+  css: ['~/assets/css/share/main.css'],
 
   // 開發伺服器：與原本 Vite 相同的 port 與 HTTPS 憑證設定
   // listhen 的 resolveCert 接受「檔案路徑」，不需要自己 readFileSync
@@ -52,6 +52,7 @@ export default defineNuxtConfig({
   },
 
   // 將 API 請求代理到 .NET 後端
+  // @ts-expect-error nuxt/schema 型別定義缺少 nitro 屬性，為已知缺陷 (nuxt/nuxt#20178)
   nitro: {
     devProxy: {
       '/weatherforecast': {

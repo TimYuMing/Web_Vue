@@ -1,0 +1,10 @@
+@import './base.css'; /* 同目錄，路徑不變 */
+
+/* 全域基礎重置 */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}

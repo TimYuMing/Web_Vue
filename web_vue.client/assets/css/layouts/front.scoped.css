@@ -1,0 +1,84 @@
+/* =============================================
+   layouts/front.vue 版型結構樣式
+   ============================================= */
+
+.front-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* ── Header ─────────────────────────────── */
+.front-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: var(--front-nav-height);
+  background-color: var(--front-bg);
+  border-bottom: 1px solid var(--front-border);
+  box-shadow: var(--front-shadow-sm);
+  display: flex;
+  align-items: center;
+}
+
+/* ── Nav ─────────────────────────────────── */
+.front-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.front-logo {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--front-primary) !important;
+  text-decoration: none !important;
+  letter-spacing: 0.01em;
+}
+
+.front-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.front-nav-links a {
+  font-size: 0.9375rem;
+  color: var(--front-text);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.front-nav-links a:hover,
+.front-nav-links a.router-link-exact-active {
+  color: var(--front-primary);
+  text-decoration: none;
+}
+
+/* ── Main ───────────────────────────────── */
+.front-main {
+  flex: 1;
+  padding: 2.5rem 0;
+}
+
+/* ── Footer ─────────────────────────────── */
+.front-footer {
+  background-color: var(--front-bg-soft);
+  border-top: 1px solid var(--front-border);
+  height: var(--front-footer-height);
+  display: flex;
+  align-items: center;
+  font-size: 0.875rem;
+  color: var(--front-text-muted);
+}
+
+/* ── RWD ─────────────────────────────────── */
+@media (max-width: 768px) {
+  .front-nav-links {
+    gap: 1rem;
+  }
+}

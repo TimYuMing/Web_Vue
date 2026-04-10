@@ -1,0 +1,188 @@
+/* =============================================
+   pages/backend/home/login.vue 頁面樣式
+   ============================================= */
+
+/* ── 全頁置中容器 ──────────────────────────── */
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  padding: 1.5rem;
+}
+
+/* ── 登入卡片 ──────────────────────────────── */
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  background-color: #ffffff;
+  border-radius: 1rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+  padding: 2.5rem 2rem;
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.login-brand {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--backend-primary);
+  letter-spacing: 0.04em;
+  display: block;
+  margin-bottom: 0.375rem;
+}
+
+.login-subtitle {
+  font-size: 0.875rem;
+  color: var(--backend-text-muted);
+}
+
+/* ── 表單 ─────────────────────────────────── */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.125rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.form-label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--backend-text);
+  letter-spacing: 0.02em;
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon {
+  position: absolute;
+  left: 0.75rem;
+  font-size: 1rem;
+  line-height: 1;
+  pointer-events: none;
+  color: var(--backend-text-muted);
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.625rem 0.75rem 0.625rem 2.375rem;
+  border: 1.5px solid var(--backend-border);
+  border-radius: var(--backend-radius);
+  font-size: 0.9375rem;
+  color: var(--backend-text);
+  background-color: #fafafa;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+  outline: none;
+}
+
+.form-input:focus {
+  border-color: var(--backend-primary);
+  background-color: #fff;
+  box-shadow: 0 0 0 3px var(--backend-primary-light);
+}
+
+.form-input::placeholder {
+  color: var(--backend-text-muted);
+  font-size: 0.875rem;
+}
+
+/* ── 驗證碼列 ─────────────────────────────── */
+.captcha-row {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-end;
+}
+
+.captcha-row .form-group {
+  flex: 1;
+}
+
+/* 驗證碼圖示意區 */
+.captcha-image-wrapper {
+  flex-shrink: 0;
+  width: 120px;
+  height: 42px;
+  border: 1.5px solid var(--backend-border);
+  border-radius: var(--backend-radius);
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
+  background: repeating-linear-gradient(
+    45deg,
+    #f0f4f8,
+    #f0f4f8 4px,
+    #e2e8f0 4px,
+    #e2e8f0 8px
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+}
+
+.captcha-placeholder-text {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 1.125rem;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  color: #334155;
+  text-decoration: line-through;
+  text-decoration-color: rgba(51, 65, 85, 0.4);
+  /* 輕微傾斜模擬真實驗證碼外觀 */
+  transform: rotate(-3deg);
+  /* 噪點陰影 */
+  text-shadow: 1px 1px 0 rgba(255,255,255,0.6), -1px -1px 0 rgba(0,0,0,0.08);
+}
+
+.captcha-refresh-hint {
+  position: absolute;
+  bottom: 2px;
+  right: 4px;
+  font-size: 0.5625rem;
+  color: var(--backend-text-muted);
+}
+
+/* ── 送出按鈕 ─────────────────────────────── */
+.login-submit {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: var(--backend-primary);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: var(--backend-radius);
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  margin-top: 0.5rem;
+  letter-spacing: 0.03em;
+}
+
+.login-submit:hover {
+  background-color: var(--backend-primary-hover);
+}
+
+.login-submit:active {
+  transform: scale(0.99);
+}
+
+/* ── 底部提示 ─────────────────────────────── */
+.login-footer {
+  text-align: center;
+  margin-top: 1.25rem;
+  font-size: 0.8125rem;
+  color: var(--backend-text-muted);
+}
