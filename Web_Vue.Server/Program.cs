@@ -1,8 +1,13 @@
+using FluentValidation;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
+
+// 註冊 FluentValidation，自動掃描當前組件中所有 IValidator 實作
+builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
