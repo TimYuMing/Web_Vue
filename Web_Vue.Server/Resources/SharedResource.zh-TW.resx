@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+
+  <!-- ===== 共用狀態 ===== -->
+  <data name="Txt_成功" xml:space="preserve">
+    <value>成功</value>
+  </data>
+  <data name="Txt_失敗" xml:space="preserve">
+    <value>失敗</value>
+  </data>
+  <data name="Txt_確認" xml:space="preserve">
+    <value>確認</value>
+  </data>
+
+  <!-- ===== 語系切換 ===== -->
+  <data name="Txt_切換語系" xml:space="preserve">
+    <value>切換語系</value>
+  </data>
+  <data name="Txt_繁體中文" xml:space="preserve">
+    <value>繁體中文</value>
+  </data>
+  <data name="Txt_英文" xml:space="preserve">
+    <value>英文</value>
+  </data>
+  <data name="Txt_目前語系" xml:space="preserve">
+    <value>目前語系</value>
+  </data>
+
+  <!-- ===== 前台版型 ===== -->
+  <data name="Txt_首頁" xml:space="preserve">
+    <value>首頁</value>
+  </data>
+
+  <!-- ===== 前台首頁 ===== -->
+  <data name="Txt_歡迎標題" xml:space="preserve">
+    <value>歡迎來到 MySite</value>
+  </data>
+  <data name="Txt_歡迎描述" xml:space="preserve">
+    <value>這裡是前台首頁，開始建構你的精彩內容。</value>
+  </data>
+  <data name="Txt_開始探索" xml:space="preserve">
+    <value>開始探索</value>
+  </data>
+  <data name="Txt_了解更多" xml:space="preserve">
+    <value>了解更多</value>
+  </data>
+  <data name="Txt_我們的特色" xml:space="preserve">
+    <value>我們的特色</value>
+  </data>
+  <data name="Txt_高效能" xml:space="preserve">
+    <value>高效能</value>
+  </data>
+  <data name="Txt_高效能描述" xml:space="preserve">
+    <value>採用 Nuxt SSR 確保最佳載入速度與 SEO 表現。</value>
+  </data>
+  <data name="Txt_現代設計" xml:space="preserve">
+    <value>現代設計</value>
+  </data>
+  <data name="Txt_現代設計描述" xml:space="preserve">
+    <value>簡潔直觀的介面，帶給使用者最佳體驗。</value>
+  </data>
+  <data name="Txt_安全可靠" xml:space="preserve">
+    <value>安全可靠</value>
+  </data>
+  <data name="Txt_安全可靠描述" xml:space="preserve">
+    <value>完善的前後端架構，保障資料安全。</value>
+  </data>
+
+  <!-- ===== 後台共用 ===== -->
+  <data name="Txt_管理後台" xml:space="preserve">
+    <value>管理後台</value>
+  </data>
+  <data name="Txt_儀表板" xml:space="preserve">
+    <value>儀表板</value>
+  </data>
+  <data name="Txt_管理員" xml:space="preserve">
+    <value>管理員</value>
+  </data>
+  <data name="Txt_後台品牌名稱" xml:space="preserve">
+    <value>backend</value>
+  </data>
+
+  <!-- ===== 後台登入頁 ===== -->
+  <data name="Txt_登入" xml:space="preserve">
+    <value>登入</value>
+  </data>
+  <data name="Txt_登入副標題" xml:space="preserve">
+    <value>請登入以進入管理後台</value>
+  </data>
+  <data name="Txt_帳號" xml:space="preserve">
+    <value>帳號</value>
+  </data>
+  <data name="Txt_請輸入帳號" xml:space="preserve">
+    <value>請輸入帳號</value>
+  </data>
+  <data name="Txt_密碼" xml:space="preserve">
+    <value>密碼</value>
+  </data>
+  <data name="Txt_請輸入密碼" xml:space="preserve">
+    <value>請輸入密碼</value>
+  </data>
+  <data name="Txt_驗證碼" xml:space="preserve">
+    <value>驗證碼</value>
+  </data>
+  <data name="Txt_請輸入驗證碼" xml:space="preserve">
+    <value>請輸入驗證碼</value>
+  </data>
+  <data name="Txt_點擊刷新" xml:space="preserve">
+    <value>點擊刷新</value>
+  </data>
+  <data name="Txt_登入按鈕" xml:space="preserve">
+    <value>登入</value>
+  </data>
+  <data name="Txt_版權聲明" xml:space="preserve">
+    <value>僅限授權人員使用</value>
+  </data>
+
+  <!-- ===== 後台首頁 ===== -->
+  <data name="Txt_總用戶數" xml:space="preserve">
+    <value>總用戶數</value>
+  </data>
+  <data name="Txt_今日訪問" xml:space="preserve">
+    <value>今日訪問</value>
+  </data>
+  <data name="Txt_待處理項目" xml:space="preserve">
+    <value>待處理項目</value>
+  </data>
+  <data name="Txt_系統警告" xml:space="preserve">
+    <value>系統警告</value>
+  </data>
+  <data name="Txt_即時" xml:space="preserve">
+    <value>即時</value>
+  </data>
+  <data name="Txt_快速操作" xml:space="preserve">
+    <value>快速操作</value>
+  </data>
+  <data name="Txt_新增資料" xml:space="preserve">
+    <value>新增資料</value>
+  </data>
+  <data name="Txt_匯出報表" xml:space="preserve">
+    <value>匯出報表</value>
+  </data>
+
+  <!-- ===== API 回應訊息 ===== -->
+  <data name="Txt_操作成功" xml:space="preserve">
+    <value>操作成功</value>
+  </data>
+  <data name="Txt_操作失敗" xml:space="preserve">
+    <value>操作失敗</value>
+  </data>
+  <data name="Txt_資料不存在" xml:space="preserve">
+    <value>資料不存在</value>
+  </data>
+  <data name="Txt_存取被拒" xml:space="preserve">
+    <value>存取被拒，請重新登入</value>
+  </data>
+  <data name="Txt_伺服器錯誤" xml:space="preserve">
+    <value>伺服器發生錯誤，請稍後再試</value>
+  </data>
+</root>

@@ -25,7 +25,6 @@
 .front-nav {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   width: 100%;
 }
 
@@ -35,6 +34,7 @@
   color: var(--front-primary) !important;
   text-decoration: none !important;
   letter-spacing: 0.01em;
+  flex-shrink: 0;
 }
 
 .front-nav-links {
@@ -42,7 +42,7 @@
   align-items: center;
   gap: 1.5rem;
   list-style: none;
-  margin: 0;
+  margin: 0 0 0 1.5rem;
   padding: 0;
 }
 
@@ -81,4 +81,35 @@
   .front-nav-links {
     gap: 1rem;
   }
+}
+/* ── Lang Switcher ──────────────────────────────── */
+.front-lang-switcher {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  margin-left: auto;
+}
+
+.front-lang-btn {
+  padding: 3px 12px;
+  border: 1px solid var(--front-border);
+  border-radius: var(--front-radius-full);
+  background: transparent;
+  color: var(--front-text-muted);
+  font-size: 0.8125rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.front-lang-btn:hover {
+  border-color: var(--front-primary);
+  color: var(--front-primary);
+}
+
+.front-lang-btn--active {
+  background: var(--front-primary);
+  border-color: var(--front-primary);
+  color: #fff;
+  font-weight: 600;
 }

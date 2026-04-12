@@ -4,17 +4,22 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "nuxt dev",
+    "dev": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 nuxt dev",
     "build": "nuxt build",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "i18n:gen": "node scripts/generate-i18n.mjs"
   },
   "dependencies": {
+    "@nuxtjs/i18n": "^10.2.4",
     "nuxt": "^3.15.4",
     "vue": "^3.5.13"
   },
   "engines": {
     "node": "^20.19.0 || >=22.12.0"
+  },
+  "devDependencies": {
+    "cross-env": "^10.1.0"
   }
 }

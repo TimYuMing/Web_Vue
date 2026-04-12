@@ -3,6 +3,64 @@ import path from 'path'
 import child_process from 'child_process'
 import { env } from 'process'
 
+// =============================================================
+// i18n 自動生成工具：讀取後端 resx → 生成前端 i18n JSON
+// 統一由後端 Resources/*.resx 管理所有前後端語系
+// =============================================================
+
+/** 解碼 XML 實體字元 */
+function decodeXmlEntities(str: string): string {
+  return str
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&apos;/g, "'")
+}
+
+/** 從 resx XML 內容解析 key-value 對 */
+function parseResx(content: string): Record<string, string> {
+  const result: Record<string, string> = {}
+  const regex = /<data\s+name="([^"]+)"[^>]*>\s*<value>([^<]*)<\/value>/g
+  let match
+  while ((match = regex.exec(content)) !== null) {
+    result[match[1]] = decodeXmlEntities(match[2].trim())
+  }
+  return result
+}
+
+/**
+ * 讀取 Web_Vue.Server/Resources/Lang.{locale}.resx
+ * 生成 web_vue.client/i18n/locales/{locale}.json
+ */
+function generateI18nLocales(): void {
+  const resxDir = path.resolve(process.cwd(), '../Web_Vue.Server/Resources')
+  const outputDir = path.resolve(process.cwd(), 'i18n/locales')
+
+  if (!fs.existsSync(resxDir)) {
+    console.warn('[i18n-gen] Resources 目錄不存在，跳過生成')
+    return
+  }
+  if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true })
+
+  const resxFiles = fs.readdirSync(resxDir).filter((f) => /^SharedResource\..+\.resx$/.test(f))
+  for (const file of resxFiles) {
+    const m = file.match(/^SharedResource\.(.+)\.resx$/)
+    if (!m) continue
+    const locale = m[1]
+    const content = fs.readFileSync(path.join(resxDir, file), 'utf-8')
+    const translations = parseResx(content)
+    const outputPath = path.join(outputDir, `${locale}.json`)
+    fs.writeFileSync(outputPath, JSON.stringify(translations, null, 2) + '\n', 'utf-8')
+    console.log(`[i18n-gen] ${locale}.json → ${Object.keys(translations).length} keys`)
+  }
+}
+
+// 在 nuxt.config.ts 載入時立即執行，確保 i18n 模組初始化前 JSON 已存在
+generateI18nLocales()
+
+// =============================================================
+
 // 與原本 vite.config.js 相同的邏輯：讀取 dotnet dev-certs 產生的憑證
 const baseFolder =
   env.APPDATA !== undefined && env.APPDATA !== ''
@@ -41,6 +99,22 @@ export default defineNuxtConfig({
   // 全域 CSS
   css: ['~/assets/css/share/main.css'],
 
+  // 載入的 Nuxt 模組
+  modules: ['@nuxtjs/i18n'],
+
+  // i18n 設定：所有語系由後端 resx 統一管理，build 時自動生成 JSON
+  i18n: {
+    locales: [
+      { code: 'zh-TW', language: 'zh-TW', file: 'zh-TW.json', name: '繁體中文' },
+      { code: 'en-US', language: 'en-US', file: 'en-US.json', name: 'English' },
+    ],
+    defaultLocale: 'zh-TW',
+    lazy: true,
+    langDir: 'locales',
+    strategy: 'no_prefix',
+    detectBrowserLanguage: false,
+  },
+
   // 開發伺服器：與原本 Vite 相同的 port 與 HTTPS 憑證設定
   // listhen 的 resolveCert 接受「檔案路徑」，不需要自己 readFileSync
   devServer: {
@@ -51,15 +125,29 @@ export default defineNuxtConfig({
     },
   },
 
-  // 將 API 請求代理到 .NET 後端
-  // @ts-expect-error nuxt/schema 型別定義缺少 nitro 屬性，為已知缺陷 (nuxt/nuxt#20178)
-  nitro: {
-    devProxy: {
-      '/weatherforecast': {
-        target: 'https://localhost:7146/weatherforecast',
-        changeOrigin: true,
-        secure: false,
+  // Vite 插件：開發模式下監聽 resx 變更，自動重新生成 i18n JSON
+  vite: {
+    plugins: [
+      {
+        name: 'resx-watcher',
+        configureServer(server: any) {
+          const resxDir = path.resolve(process.cwd(), '../Web_Vue.Server/Resources')
+          server.watcher.add(resxDir)
+          server.watcher.on('change', (filePath: string) => {
+            if (filePath.endsWith('.resx')) {
+              console.log('[i18n-gen] resx 異動，重新生成語系 JSON...')
+              generateI18nLocales()
+            }
+          })
+        },
       },
+    ],
+  },
+
+  // 將 /api/** 請求代理到 .NET 後端
+  routeRules: {
+    '/api/**': {
+      proxy: 'https://localhost:44316/api/**',
     },
   },
 })
