@@ -1,4 +1,9 @@
 <script setup>
+  // locale / locales 為響應式 Ref，需在 setup 中透過 useI18n() 取得
+  const { locale, locales } = useI18n()
+
+  const $resx = useResx()
+
   // 前台全域 SEO 預設值 — 各頁面可透過 useSeoMeta / useHead 覆寫
   useSeoMeta({
     titleTemplate: (title) => title ? `${title} | MySite` : 'MySite',
@@ -16,11 +21,11 @@
     link: [{ rel: 'canonical', href: useRequestURL().href }],
   })
 
-  // 導覽選單項目
-  const navItems = [
-    { label: '首頁', path: '/front/home' },
+  // 導覽選單項目（使用 computed 確保語系切換時即時更新）
+  const navItems = computed(() => [
+    { label: $resx('Txt_首頁'), path: '/front/home' },
     // 未來可在此新增更多導覽項目
-  ]
+  ])
 </script>
 
 <template>
@@ -36,6 +41,19 @@
               <NuxtLink :to="item.path" :aria-label="item.label">{{ item.label }}</NuxtLink>
             </li>
           </ul>
+
+          <!-- 語系切換 -->
+          <div class="front-lang-switcher">
+            <button
+              v-for="loc in locales"
+              :key="loc.code"
+              class="front-lang-btn"
+              :class="{ 'front-lang-btn--active': locale === loc.code }"
+              @click="$setLocale(loc.code)"
+            >
+              {{ loc.name }}
+            </button>
+          </div>
         </nav>
       </div>
     </header>

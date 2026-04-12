@@ -1,6 +1,6 @@
 <script setup>
 definePageMeta({
-  layout: false, // 登入頁不套用後台 layout（無側欄）
+  layout: false,
   title: '登入',
 })
 
@@ -36,15 +36,15 @@ function handleLogin() {
     <div class="login-card">
       <!-- 頁首 -->
       <header class="login-header">
-        <span class="login-brand">backend</span>
-        <p class="login-subtitle">請登入以進入管理後台</p>
+        <span class="login-brand">{{ $resx('Txt_後台品牌名稱') }}</span>
+        <p class="login-subtitle">{{ $resx('Txt_登入副標題') }}</p>
       </header>
 
       <!-- 登入表單 -->
       <form class="login-form" @submit.prevent="handleLogin" novalidate>
         <!-- 帳號 -->
         <div class="form-group">
-          <label class="form-label" for="login-account">帳號</label>
+          <label class="form-label" for="login-account">{{ $resx('Txt_帳號') }}</label>
           <div class="input-wrapper">
             <span class="input-icon" aria-hidden="true">👤</span>
             <input
@@ -52,7 +52,7 @@ function handleLogin() {
               v-model="form.account"
               type="text"
               class="form-input"
-              placeholder="請輸入帳號"
+              :placeholder="$resx('Txt_請輸入帳號')"
               autocomplete="username"
               required
             />
@@ -61,7 +61,7 @@ function handleLogin() {
 
         <!-- 密碼 -->
         <div class="form-group">
-          <label class="form-label" for="login-password">密碼</label>
+          <label class="form-label" for="login-password">{{ $resx('Txt_密碼') }}</label>
           <div class="input-wrapper">
             <span class="input-icon" aria-hidden="true">🔒</span>
             <input
@@ -69,7 +69,7 @@ function handleLogin() {
               v-model="form.password"
               type="password"
               class="form-input"
-              placeholder="請輸入密碼"
+              :placeholder="$resx('Txt_請輸入密碼')"
               autocomplete="current-password"
               required
             />
@@ -78,7 +78,7 @@ function handleLogin() {
 
         <!-- 驗證碼 -->
         <div class="form-group">
-          <label class="form-label" for="login-captcha">驗證碼</label>
+          <label class="form-label" for="login-captcha">{{ $resx('Txt_驗證碼') }}</label>
           <div class="captcha-row">
             <div class="form-group">
               <div class="input-wrapper">
@@ -88,7 +88,7 @@ function handleLogin() {
                   v-model="form.captcha"
                   type="text"
                   class="form-input"
-                  placeholder="請輸入驗證碼"
+                  :placeholder="$resx('Txt_請輸入驗證碼')"
                   autocomplete="off"
                   maxlength="6"
                   required
@@ -99,27 +99,27 @@ function handleLogin() {
             <!-- 驗證碼示意圖（點擊可刷新） -->
             <div
               class="captcha-image-wrapper"
-              title="點擊刷新驗證碼"
+              :title="$resx('Txt_點擊刷新')"
               role="button"
               tabindex="0"
-              aria-label="驗證碼圖片，點擊刷新"
+              :aria-label="$resx('Txt_驗證碼')"
               @click="refreshCaptcha"
               @keydown.enter="refreshCaptcha"
             >
               <span class="captcha-placeholder-text" aria-hidden="true">
                 {{ mockCaptchaCode }}
               </span>
-              <span class="captcha-refresh-hint">點擊刷新</span>
+              <span class="captcha-refresh-hint">{{ $resx('Txt_點擊刷新') }}</span>
             </div>
           </div>
         </div>
 
         <!-- 送出 -->
-        <button type="submit" class="login-submit">登入</button>
+        <button type="submit" class="login-submit">{{ $resx('Txt_登入按鈕') }}</button>
       </form>
 
       <footer class="login-footer">
-        &copy; {{ new Date().getFullYear() }} MySite &mdash; 僅限授權人員使用
+        &copy; {{ new Date().getFullYear() }} MySite &mdash; {{ $resx('Txt_版權聲明') }}
       </footer>
     </div>
   </div>
