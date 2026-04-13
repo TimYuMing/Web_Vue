@@ -1,5 +1,3 @@
-using System.ComponentModel;
-
 namespace Web_Vue.Server.Enums;
 
 /// <summary>
@@ -18,4 +16,16 @@ public enum ResultType
     /// <summary> 確認 </summary>
     [Description("Txt_確認")]
     Confirm = 3
+}
+
+/// <summary> 帳號狀態 列舉 </summary>
+public enum UserProfileStatus
+{
+    /// <summary> 啟用 </summary>
+    [Description("Txt_啟用")]
+    Enable = 1,
+
+    /// <summary> 停用 </summary>
+    [Description("Txt_停用")]
+    Disable = 2,
 }

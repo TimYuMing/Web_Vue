@@ -1,5 +1,3 @@
-using Web_Vue.Server.Models;
-
 namespace Web_Vue.Server.Validators;
 
 /// <summary> TestRequestModel 驗證器 </summary>

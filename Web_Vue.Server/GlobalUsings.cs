@@ -1,5 +1,12 @@
 global using FluentValidation;
+global using Microsoft.AspNetCore.Authorization;
 global using Microsoft.AspNetCore.Mvc;
+global using Microsoft.AspNetCore.Mvc.ModelBinding;
+global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.Localization;
+global using System.ComponentModel;
+global using System.ComponentModel.DataAnnotations;
+global using System.ComponentModel.DataAnnotations.Schema;
+global using System.Security.Claims;
 global using Web_Vue.Server.Enums;
 global using Web_Vue.Server.Models;

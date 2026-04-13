@@ -147,7 +147,7 @@ export default defineNuxtConfig({
   // 將 /api/** 請求代理到 .NET 後端
   routeRules: {
     '/api/**': {
-      proxy: 'https://localhost:44316/api/**',
+      proxy: 'http://localhost:45336/api/**',
     },
   },
 })
