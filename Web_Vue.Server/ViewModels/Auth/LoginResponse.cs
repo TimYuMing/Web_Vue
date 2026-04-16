@@ -1,4 +1,4 @@
-namespace Web_Vue.Server.Models.Auth;
+namespace Web_Vue.Server.ViewModels.Auth;
 
 /// <summary> 登入成功回應 DTO </summary>
 public class LoginResponse

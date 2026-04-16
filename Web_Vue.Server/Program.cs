@@ -1,10 +1,8 @@
-using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
-using Web_Vue.Server.Entities;
+using Web_Vue.Server.Models;
 using Web_Vue.Server.Services;
 
 var builder = WebApplication.CreateBuilder(args);

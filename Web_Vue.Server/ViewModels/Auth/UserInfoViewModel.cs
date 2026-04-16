@@ -1,7 +1,7 @@
-namespace Web_Vue.Server.Models.Auth;
+namespace Web_Vue.Server.ViewModels.Auth;
 
 /// <summary> 使用者資料模型（序列化後存入 JWT Claims） </summary>
-public class UserInfoModel
+public class UserInfoViewModel
 {
     /// <summary> 使用者 ID </summary>
     public int ID { get; set; }

@@ -2,7 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using System.Text.Json;
 using Microsoft.IdentityModel.Tokens;
-using Web_Vue.Server.Models.Auth;
+using Web_Vue.Server.ViewModels.Auth;
 using Web_Vue.Server.Tools;
 
 namespace Web_Vue.Server.Services;
@@ -18,7 +18,7 @@ public class JwtService : IJwtService
     }
 
     /// <inheritdoc/>
-    public string GenerateToken(UserInfoModel userInfo)
+    public string GenerateToken(UserInfoViewModel userInfo)
     {
         var secretKey = _configuration["JwtSettings:SecretKey"]
             ?? throw new InvalidOperationException("JwtSettings:SecretKey 未設定");

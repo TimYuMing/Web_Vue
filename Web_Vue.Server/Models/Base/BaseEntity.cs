@@ -1,6 +1,6 @@
-using Web_Vue.Server.Entities.Interfaces;
+using Web_Vue.Server.Models.Interfaces;
 
-namespace Web_Vue.Server.Entities.Base;
+namespace Web_Vue.Server.Models.Base;
 
 /// <summary> int 主鍵實體基底類別 (自動遞增) </summary>
 public abstract class EntityBase : IEntity

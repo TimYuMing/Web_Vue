@@ -1,4 +1,4 @@
-namespace Web_Vue.Server.Entities.Interfaces;
+namespace Web_Vue.Server.Models.Interfaces;
 
 /// <summary> 具有 int 型別主鍵的實體介面 </summary>
 public interface IEntity

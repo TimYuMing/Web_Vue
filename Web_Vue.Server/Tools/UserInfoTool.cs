@@ -1,5 +1,5 @@
 using System.Text.Json;
-using Web_Vue.Server.Models.Auth;
+using Web_Vue.Server.ViewModels.Auth;
 
 namespace Web_Vue.Server.Tools;
 
@@ -10,7 +10,7 @@ public static class UserInfoTool
     public const string UserKey = "__UserInfoKey";
 
     /// <summary> 從 ClaimsPrincipal 反序列化取得使用者資訊，未登入或解析失敗時回傳 null </summary>
-    public static UserInfoModel? GetUserInfo(ClaimsPrincipal? user)
+    public static UserInfoViewModel? GetUserInfo(ClaimsPrincipal? user)
     {
         try
         {
@@ -19,7 +19,7 @@ public static class UserInfoTool
             var json = user.Claims.FirstOrDefault(x => x.Type == UserKey)?.Value;
             if (string.IsNullOrEmpty(json)) return null;
 
-            return JsonSerializer.Deserialize<UserInfoModel>(json);
+            return JsonSerializer.Deserialize<UserInfoViewModel>(json);
         }
         catch
         {

@@ -1,9 +1,9 @@
-namespace Web_Vue.Server.Models;
+namespace Web_Vue.Server.ViewModels;
 
 /// <summary>
 /// 統一 API 回應模型
 /// </summary>
-public class ResponseModel
+public class ResponseViewModel
 {
     /// <summary>
     /// 回應結果狀態

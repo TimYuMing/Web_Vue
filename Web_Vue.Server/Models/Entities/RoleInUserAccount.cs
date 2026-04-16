@@ -1,4 +1,4 @@
-namespace Web_Vue.Server.Entities;
+namespace Web_Vue.Server.Models.Entities;
 
 /// <summary> 角色使用者關聯表(多對多) </summary>
 [Comment("角色使用者關聯表(多對多)")]

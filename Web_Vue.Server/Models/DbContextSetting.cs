@@ -1,7 +1,7 @@
-using Web_Vue.Server.Entities.Interfaces;
+using Web_Vue.Server.Models.Interfaces;
 using Web_Vue.Server.Services;
 
-namespace Web_Vue.Server.Entities;
+namespace Web_Vue.Server.Models;
 
 /// <summary> 應用程式資料庫 Context — 建構子、SaveChanges、稽核欄位邏輯 </summary>
 public partial class DbEntityContext : DbContext

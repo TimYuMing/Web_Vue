@@ -1,5 +1,3 @@
-using Web_Vue.Server.Models;
-
 namespace Web_Vue.Server.Controllers;
 
 /// <summary> 測試用 API 控制器 </summary>
@@ -11,14 +9,14 @@ public class TestController : BaseController
     /// <param name="request">請求模型</param>
     /// <param name="validator">注入的驗證器</param>
     [HttpPost]
-    public async Task<ActionResult<ResponseModel>> Post(
-        [FromBody] TestRequestModel request,
-        [FromServices] IValidator<TestRequestModel> validator)
+    public async Task<ActionResult<ResponseViewModel>> Post(
+        [FromBody] TestRequestViewModel request,
+        [FromServices] IValidator<TestRequestViewModel> validator)
     {
         var result = await validator.ValidateAsync(request);
 
         if (!result.IsValid)
-            return Ok(new ResponseModel
+            return Ok(new ResponseViewModel
             {
                 Status = ResultType.Fail,
                 Message = Resx["Txt_操作失敗"],
@@ -32,7 +30,7 @@ public class TestController : BaseController
                     .ToList()
             });
 
-        return Ok(new ResponseModel
+        return Ok(new ResponseViewModel
         {
             Status = ResultType.Success,
             Message = Resx["Txt_操作成功"],

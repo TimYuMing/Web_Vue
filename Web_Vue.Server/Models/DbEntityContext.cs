@@ -1,7 +1,8 @@
 using System.Reflection;
-using Web_Vue.Server.Entities.Interfaces;
+using Web_Vue.Server.Models.Entities;
+using Web_Vue.Server.Models.Interfaces;
 
-namespace Web_Vue.Server.Entities;
+namespace Web_Vue.Server.Models;
 
 /// <summary> 應用程式資料庫 Context — DbSet 與 OnModelCreating </summary>
 public partial class DbEntityContext : DbContext

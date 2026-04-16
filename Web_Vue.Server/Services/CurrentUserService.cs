@@ -1,4 +1,4 @@
-using Web_Vue.Server.Models.Auth;
+using Web_Vue.Server.ViewModels.Auth;
 using Web_Vue.Server.Tools;
 
 namespace Web_Vue.Server.Services;
@@ -7,7 +7,7 @@ namespace Web_Vue.Server.Services;
 public class CurrentUserService(IHttpContextAccessor httpContextAccessor) : ICurrentUserService
 {
     /// <inheritdoc/>
-    public UserInfoModel? UserInfo { get; } =
+    public UserInfoViewModel? UserInfo { get; } =
         UserInfoTool.GetUserInfo(httpContextAccessor.HttpContext?.User);
 
     /// <inheritdoc/>

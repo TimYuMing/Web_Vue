@@ -1,6 +1,6 @@
-using Web_Vue.Server.Entities.Base;
+using Web_Vue.Server.Models.Base;
 
-namespace Web_Vue.Server.Entities;
+namespace Web_Vue.Server.Models.Entities;
 
 /// <summary> 角色資料表 </summary>
 [Comment("角色資料表")]

@@ -1,6 +1,6 @@
-using Web_Vue.Server.Entities.Base;
+using Web_Vue.Server.Models.Base;
 
-namespace Web_Vue.Server.Entities;
+namespace Web_Vue.Server.Models.Entities;
 
 /// <summary> 使用者帳號 </summary>
 [Comment("使用者帳號")]

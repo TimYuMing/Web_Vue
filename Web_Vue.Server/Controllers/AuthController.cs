@@ -1,6 +1,7 @@
-using Web_Vue.Server.Entities;
 using Web_Vue.Server.Helpers;
-using Web_Vue.Server.Models.Auth;
+using Web_Vue.Server.Models;
+using Web_Vue.Server.Models.Entities;
+using Web_Vue.Server.ViewModels.Auth;
 using Web_Vue.Server.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -54,7 +55,7 @@ public class AuthController : BaseController
             .Where(r => roleIds.Contains(r.ID) && r.IsEnable)
             .ToListAsync();
 
-        var userInfo = new UserInfoModel
+        var userInfo = new UserInfoViewModel
         {
             ID                    = userAccount.ID,
             Account               = userAccount.Account,

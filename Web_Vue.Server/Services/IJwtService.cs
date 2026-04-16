@@ -1,4 +1,4 @@
-using Web_Vue.Server.Models.Auth;
+using Web_Vue.Server.ViewModels.Auth;
 
 namespace Web_Vue.Server.Services;
 
@@ -6,5 +6,5 @@ namespace Web_Vue.Server.Services;
 public interface IJwtService
 {
     /// <summary> 依據使用者資訊模型產生 JWT Token </summary>
-    string GenerateToken(UserInfoModel userInfo);
+    string GenerateToken(UserInfoViewModel userInfo);
 }
