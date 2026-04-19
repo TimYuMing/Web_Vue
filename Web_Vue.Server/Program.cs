@@ -1,9 +1,16 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using Web_Vue.Server._Authorization;
+using Web_Vue.Server._Middleware;
+using Web_Vue.Server.Interfaces;
 using Web_Vue.Server.Models;
+using Web_Vue.Server.Repositories.Base;
 using Web_Vue.Server.Services;
+using Web_Vue.Server.Tools;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +27,12 @@ builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 // ── EF Core + PostgreSQL ──────────────────────────────────────────────────────
 builder.Services.AddDbContext<DbEntityContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// ── 記憶體快取 + 登入相關服務 ──────────────────────────────
+builder.Services.AddMemoryCache();
+builder.Services.AddScoped<CacheService>();
+builder.Services.AddScoped<LoginChallengeService>();
+builder.Services.AddScoped<LoginAttemptService>();
 
 // ── 當前使用者服務 ──────────────────────────────────────────────────────────────
 builder.Services.AddHttpContextAccessor();
@@ -44,9 +57,25 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             IssuerSigningKey         = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret)),
             ClockSkew                = TimeSpan.Zero,
         };
+        // 從 HttpOnly Cookie 讀取 JWT（取代 Authorization Header）
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = ctx =>
+            {
+                var token = ctx.Request.Cookies["jwt"];
+                if (!string.IsNullOrWhiteSpace(token))
+                    ctx.Token = token;
+                return Task.CompletedTask;
+            }
+        };
     });
 
 builder.Services.AddAuthorization();
+
+// ── 權限驗證 ──────────────────────────────────────────────────────────────────
+builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
+builder.Services.AddScoped<IAuthorizationHandler, PermissionAuthHandler>();
+builder.Services.AddScoped<PermissionTool>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -113,6 +142,7 @@ app.UseRequestLocalization(new RequestLocalizationOptions()
     .AddSupportedUICultures(supportedCultures));
 
 app.UseAuthentication();
+app.UseMiddleware<CsrfValidationMiddleware>();
 app.UseAuthorization();
 
 app.MapControllers();

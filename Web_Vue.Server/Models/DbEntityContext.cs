@@ -1,6 +1,6 @@
 using System.Reflection;
 using Web_Vue.Server.Models.Entities;
-using Web_Vue.Server.Models.Interfaces;
+using Web_Vue.Server.Interfaces;
 
 namespace Web_Vue.Server.Models;
 
@@ -21,6 +21,12 @@ public partial class DbEntityContext : DbContext
     /// <summary> 角色使用者關聯表 </summary>
     public DbSet<RoleInUserAccount> RoleInUserAccounts => Set<RoleInUserAccount>();
 
+    /// <summary> 權限資料表 </summary>
+    public DbSet<Permission> Permissions => Set<Permission>();
+
+    /// <summary> 權限角色關聯表 </summary>
+    public DbSet<PermissionInRole> PermissionInRoles => Set<PermissionInRole>();
+
     // ===================== OnModelCreating =====================
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -30,6 +36,10 @@ public partial class DbEntityContext : DbContext
         // RoleInUserAccount 複合主鍵
         modelBuilder.Entity<RoleInUserAccount>()
             .HasKey(r => new { r.UserAccountID, r.RoleID });
+
+        // PermissionInRole 複合主鍵
+        modelBuilder.Entity<PermissionInRole>()
+            .HasKey(p => new { p.RoleID, p.PermissionID });
 
         // 對所有實作 IUpdateAudit 的實體套用軟刪除全域查詢篩選
         foreach (var entityType in modelBuilder.Model.GetEntityTypes())

@@ -1,6 +1,5 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
-using System.Text.Json;
 using Microsoft.IdentityModel.Tokens;
 using Web_Vue.Server.ViewModels.Auth;
 using Web_Vue.Server.Tools;
@@ -26,11 +25,22 @@ public class JwtService : IJwtService
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
+        var roleListText = string.Join(",", (userInfo.RoleList ?? []).Distinct());
+
         var claims = new[]
         {
-            new Claim(UserInfoTool.UserKey, JsonSerializer.Serialize(userInfo)),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.TimeOfDay.Ticks.ToString(), ClaimValueTypes.Integer64),
+            new Claim(UserInfoTool.UserIdClaimType,        userInfo.ID.ToString()),
+            new Claim(UserInfoTool.AccountClaimType,       userInfo.Account ?? string.Empty),
+            new Claim(UserInfoTool.NameClaimType,          userInfo.Name ?? string.Empty),
+            new Claim(UserInfoTool.RoleListClaimType,      roleListText),
+            new Claim(UserInfoTool.IsAdminClaimType,       userInfo.IsAdmin.ToString()),
+            new Claim(UserInfoTool.IsMaintainingClaimType, userInfo.IsMaintaining.ToString()),
+            new Claim(ClaimTypes.NameIdentifier,           userInfo.ID.ToString()),
+            new Claim(ClaimTypes.Name,                     userInfo.Name ?? string.Empty),
+            new Claim(JwtRegisteredClaimNames.Sub,         userInfo.ID.ToString()),
+            new Claim(JwtRegisteredClaimNames.Jti,         Guid.NewGuid().ToString()),
+            new Claim(JwtRegisteredClaimNames.Iat,         DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(),
+                      ClaimValueTypes.Integer64),
         };
 
         var expireMinutes = int.TryParse(_configuration["JwtSettings:ExpireMinutes"], out var m) ? m : 60;

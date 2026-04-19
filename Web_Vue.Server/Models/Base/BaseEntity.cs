@@ -1,4 +1,4 @@
-using Web_Vue.Server.Models.Interfaces;
+using Web_Vue.Server.Interfaces;
 
 namespace Web_Vue.Server.Models.Base;
 

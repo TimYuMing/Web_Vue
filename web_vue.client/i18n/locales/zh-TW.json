@@ -45,5 +45,14 @@
   "Txt_操作失敗": "操作失敗",
   "Txt_資料不存在": "資料不存在",
   "Txt_存取被拒": "存取被拒，請重新登入",
-  "Txt_伺服器錯誤": "伺服器發生錯誤，請稍後再試"
+  "Txt_伺服器錯誤": "伺服器發生錯誤，請稍後再試",
+  "Txt_登出": "登出",
+  "ValidMessage_VM_{0}_Required": "【{0}】不可空白",
+  "ValidMessage_Login_ChallengeId_Required": "請重新載入驗證碼",
+  "ValidMessage_ValidCode_驗證碼錯誤": "驗證碼錯誤，請重新輸入",
+  "ValidMessage_Login_已連續輸入錯誤 5 次，請 15 分鐘後再試": "已連續輸入錯誤 5 次，請 15 分鐘後再試",
+  "ValidMessage_Login_帳號或密碼錯誤，若連續錯誤 5 次，將暫停 15 分鐘禁止登入": "帳號或密碼錯誤，若連續錯誤 5 次，將暫停 15 分鐘禁止登入",
+  "ValidMessage_Login_帳號已停用": "帳號已停用，請聯絡管理員",
+  "RedirectMessage_ValidCode_請進行重設密碼": "請先進行重設密碼",
+  "RedirectMessage_ValidCode_密碼已過期，請進行重設密碼申請": "密碼已過期，請進行重設密碼申請"
 }

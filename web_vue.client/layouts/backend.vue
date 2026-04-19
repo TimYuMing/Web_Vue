@@ -13,12 +13,18 @@ useHead({
 })
 
 const route = useRoute()
+const { user, logout } = useAuth()
 
 // 側欄導覽項目  未來可擴充子選單
 const navItems = computed(() => [
   { label: $resx('Txt_儀表板'), path: '/backend/home', icon: '◈' },
   // 可在此新增更多後台選單項目
 ])
+
+// 登出
+async function handleLogout() {
+  await logout()
+}
 </script>
 
 <template>
@@ -66,7 +72,8 @@ const navItems = computed(() => [
               {{ loc.name }}
             </button>
           </div>
-          <span class="backend-user-info">{{ $resx('Txt_管理員') }}</span>
+          <span class="backend-user-info">{{ user?.name ?? $resx('Txt_管理員') }}</span>
+          <button class="backend-logout-btn" @click="handleLogout">{{ $resx('Txt_登出') || '登出' }}</button>
         </div>
       </header>
 

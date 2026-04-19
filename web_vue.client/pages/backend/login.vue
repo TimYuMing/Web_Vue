@@ -1,4 +1,7 @@
-<script setup>
+<script setup lang="ts">
+import { ResultType } from '~/types/api'
+import { LoginFailType } from '~/types/auth'
+
 definePageMeta({
   layout: false,
   title: '登入',
@@ -6,28 +9,85 @@ definePageMeta({
 
 useHead({ title: '登入 | 管理後台' })
 
+const $resx = useResx()
+const { fetchCaptcha, login } = useAuth()
+
 // 表單資料
 const form = reactive({
   account: '',
   password: '',
-  captcha: '',
+  validCode: '',
 })
 
-// 示意用驗證碼（之後串接後端 API 產生）
-const mockCaptchaCode = ref('8K3mZ')
+// 驗證碼狀態
+const captchaImage = ref('')
+const challengeId = ref('')
+const isLoading = ref(false)
+const errorMessage = ref('')
+const fieldErrors = ref<Record<string, string[]>>({})
 
-function refreshCaptcha() {
-  // TODO: 呼叫後端 API 重新取得驗證碼圖片
-  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789'
-  mockCaptchaCode.value = Array.from(
-    { length: 5 },
-    () => chars[Math.floor(Math.random() * chars.length)],
-  ).join('')
+// 載入驗證碼
+async function loadCaptcha() {
+  const captcha = await fetchCaptcha()
+  if (captcha) {
+    captchaImage.value = captcha.imageBase64
+    challengeId.value = captcha.challengeId
+  }
 }
 
-function handleLogin() {
-  // TODO: 呼叫後端登入 API
-  console.log('登入資料：', form)
+// 初始載入
+onMounted(() => loadCaptcha())
+
+async function handleLogin() {
+  errorMessage.value = ''
+  fieldErrors.value = {}
+
+  if (!form.account || !form.password || !form.validCode) {
+    errorMessage.value = '請填寫所有欄位'
+    return
+  }
+
+  isLoading.value = true
+  try {
+    const res = await login({
+      account: form.account,
+      password: form.password,
+      challengeId: challengeId.value,
+      validCode: form.validCode,
+    })
+
+    if (res.status === ResultType.Success) {
+      // 登入成功 → middleware 會讓 /backend/home 通過
+      await navigateTo('/backend/home')
+      return
+    }
+
+    // 登入失敗
+    if (res.errorList?.length) {
+      for (const err of res.errorList) {
+        fieldErrors.value[err.key] = err.errorTextList
+      }
+    }
+
+    if (res.message) {
+      errorMessage.value = res.message
+    }
+
+    const failData = res.data
+    if (failData?.redirectPath) {
+      errorMessage.value = res.message || '請依指示操作'
+      // 密碼過期 / 暫時密碼 → 導向特定頁面（未來可擴充）
+    }
+  }
+  catch {
+    errorMessage.value = '登入失敗，請稍後再試'
+  }
+  finally {
+    isLoading.value = false
+    // 刷新驗證碼（不論成功與否，challenge 只能使用一次）
+    form.validCode = ''
+    await loadCaptcha()
+  }
 }
 </script>
 
@@ -39,6 +99,11 @@ function handleLogin() {
         <span class="login-brand">{{ $resx('Txt_後台品牌名稱') }}</span>
         <p class="login-subtitle">{{ $resx('Txt_登入副標題') }}</p>
       </header>
+
+      <!-- 錯誤訊息 -->
+      <div v-if="errorMessage" class="login-error" role="alert">
+        {{ errorMessage }}
+      </div>
 
       <!-- 登入表單 -->
       <form class="login-form" @submit.prevent="handleLogin" novalidate>
@@ -52,11 +117,13 @@ function handleLogin() {
               v-model="form.account"
               type="text"
               class="form-input"
+              :class="{ 'input-error': fieldErrors['Account'] }"
               :placeholder="$resx('Txt_請輸入帳號')"
               autocomplete="username"
               required
             />
           </div>
+          <p v-if="fieldErrors['Account']" class="field-error">{{ fieldErrors['Account'][0] }}</p>
         </div>
 
         <!-- 密碼 -->
@@ -69,11 +136,13 @@ function handleLogin() {
               v-model="form.password"
               type="password"
               class="form-input"
+              :class="{ 'input-error': fieldErrors['Password'] }"
               :placeholder="$resx('Txt_請輸入密碼')"
               autocomplete="current-password"
               required
             />
           </div>
+          <p v-if="fieldErrors['Password']" class="field-error">{{ fieldErrors['Password'][0] }}</p>
         </div>
 
         <!-- 驗證碼 -->
@@ -85,9 +154,10 @@ function handleLogin() {
                 <span class="input-icon" aria-hidden="true">🔑</span>
                 <input
                   id="login-captcha"
-                  v-model="form.captcha"
+                  v-model="form.validCode"
                   type="text"
                   class="form-input"
+                  :class="{ 'input-error': fieldErrors['ValidCode'] }"
                   :placeholder="$resx('Txt_請輸入驗證碼')"
                   autocomplete="off"
                   maxlength="6"
@@ -96,26 +166,33 @@ function handleLogin() {
               </div>
             </div>
 
-            <!-- 驗證碼示意圖（點擊可刷新） -->
+            <!-- 驗證碼圖片（點擊可刷新） -->
             <div
               class="captcha-image-wrapper"
               :title="$resx('Txt_點擊刷新')"
               role="button"
               tabindex="0"
               :aria-label="$resx('Txt_驗證碼')"
-              @click="refreshCaptcha"
-              @keydown.enter="refreshCaptcha"
+              @click="loadCaptcha"
+              @keydown.enter="loadCaptcha"
             >
-              <span class="captcha-placeholder-text" aria-hidden="true">
-                {{ mockCaptchaCode }}
-              </span>
+              <img
+                v-if="captchaImage"
+                :src="captchaImage"
+                alt="驗證碼"
+                class="captcha-img"
+              />
+              <span v-else class="captcha-placeholder-text" aria-hidden="true">載入中…</span>
               <span class="captcha-refresh-hint">{{ $resx('Txt_點擊刷新') }}</span>
             </div>
           </div>
+          <p v-if="fieldErrors['ValidCode']" class="field-error">{{ fieldErrors['ValidCode'][0] }}</p>
         </div>
 
         <!-- 送出 -->
-        <button type="submit" class="login-submit">{{ $resx('Txt_登入按鈕') }}</button>
+        <button type="submit" class="login-submit" :disabled="isLoading">
+          {{ isLoading ? '登入中…' : $resx('Txt_登入按鈕') }}
+        </button>
       </form>
 
       <footer class="login-footer">

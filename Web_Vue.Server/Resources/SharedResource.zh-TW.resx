@@ -192,4 +192,33 @@
   <data name="Txt_伺服器錯誤" xml:space="preserve">
     <value>伺服器發生錯誤，請稍後再試</value>
   </data>
+  <data name="Txt_登出" xml:space="preserve">
+    <value>登出</value>
+  </data>
+
+  <!-- ===== 登入驗證訊息 ===== -->
+  <data name="ValidMessage_VM_{0}_Required" xml:space="preserve">
+    <value>【{0}】不可空白</value>
+  </data>
+  <data name="ValidMessage_Login_ChallengeId_Required" xml:space="preserve">
+    <value>請重新載入驗證碼</value>
+  </data>
+  <data name="ValidMessage_ValidCode_驗證碼錯誤" xml:space="preserve">
+    <value>驗證碼錯誤，請重新輸入</value>
+  </data>
+  <data name="ValidMessage_Login_已連續輸入錯誤 5 次，請 15 分鐘後再試" xml:space="preserve">
+    <value>已連續輸入錯誤 5 次，請 15 分鐘後再試</value>
+  </data>
+  <data name="ValidMessage_Login_帳號或密碼錯誤，若連續錯誤 5 次，將暫停 15 分鐘禁止登入" xml:space="preserve">
+    <value>帳號或密碼錯誤，若連續錯誤 5 次，將暫停 15 分鐘禁止登入</value>
+  </data>
+  <data name="ValidMessage_Login_帳號已停用" xml:space="preserve">
+    <value>帳號已停用，請聯絡管理員</value>
+  </data>
+  <data name="RedirectMessage_ValidCode_請進行重設密碼" xml:space="preserve">
+    <value>請先進行重設密碼</value>
+  </data>
+  <data name="RedirectMessage_ValidCode_密碼已過期，請進行重設密碼申請" xml:space="preserve">
+    <value>密碼已過期，請進行重設密碼申請</value>
+  </data>
 </root>

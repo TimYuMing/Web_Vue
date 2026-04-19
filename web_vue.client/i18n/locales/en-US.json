@@ -45,5 +45,14 @@
   "Txt_操作失敗": "Operation failed",
   "Txt_資料不存在": "Data not found",
   "Txt_存取被拒": "Access denied, please login again",
-  "Txt_伺服器錯誤": "Server error, please try again later"
+  "Txt_伺服器錯誤": "Server error, please try again later",
+  "Txt_登出": "Logout",
+  "ValidMessage_VM_{0}_Required": "{0} is required",
+  "ValidMessage_Login_ChallengeId_Required": "Please reload the captcha",
+  "ValidMessage_ValidCode_驗證碼錯誤": "Invalid captcha, please try again",
+  "ValidMessage_Login_已連續輸入錯誤 5 次，請 15 分鐘後再試": "Too many failed attempts. Please try again in 15 minutes",
+  "ValidMessage_Login_帳號或密碼錯誤，若連續錯誤 5 次，將暫停 15 分鐘禁止登入": "Invalid account or password. After 5 failed attempts, login will be locked for 15 minutes",
+  "ValidMessage_Login_帳號已停用": "This account has been disabled. Please contact the administrator",
+  "RedirectMessage_ValidCode_請進行重設密碼": "Please reset your password",
+  "RedirectMessage_ValidCode_密碼已過期，請進行重設密碼申請": "Your password has expired. Please apply for a password reset"
 }

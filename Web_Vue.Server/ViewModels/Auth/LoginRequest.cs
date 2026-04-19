@@ -8,4 +8,10 @@ public class LoginRequest
 
     /// <summary> 密碼 </summary>
     public string Password { get; set; } = string.Empty;
+
+    /// <summary> 驗證碼 Challenge ID（由 /api/auth/captcha 取得） </summary>
+    public string ChallengeId { get; set; } = string.Empty;
+
+    /// <summary> 使用者輸入的圖形驗證碼 </summary>
+    public string ValidCode { get; set; } = string.Empty;
 }
