@@ -29,3 +29,16 @@ public enum UserProfileStatus
     [Description("Txt_停用")]
     Disable = 2,
 }
+
+/// <summary> 登入失敗類型 </summary>
+public enum LoginFailType
+{
+    /// <summary> 驗證失敗（帳密錯誤、帳號停用、驗證碼錯誤等一般失敗） </summary>
+    驗證失敗 = 1,
+
+    /// <summary> 密碼已過期，需重設 </summary>
+    密碼過期 = 2,
+
+    /// <summary> 使用暫時密碼，需更換密碼 </summary>
+    使用暫時密碼 = 3,
+}

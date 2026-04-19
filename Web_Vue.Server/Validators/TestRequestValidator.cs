@@ -1,7 +1,7 @@
 namespace Web_Vue.Server.Validators;
 
-/// <summary> TestRequestModel 驗證器 </summary>
-public class TestRequestValidator : AbstractValidator<TestRequestModel>
+/// <summary> TestRequestViewModel 驗證器 </summary>
+public class TestRequestValidator : AbstractValidator<TestRequestViewModel>
 {
     /// <summary> Constructor </summary>
     public TestRequestValidator()

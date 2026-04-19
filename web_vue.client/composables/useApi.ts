@@ -25,6 +25,23 @@ export const useApi = () => {
     catch { return 'zh-TW' }
   }
 
+  // 從 Cookie 讀取 CSRF Token（登入後由後端設定）
+  const getCsrfToken = (): string => {
+    if (import.meta.server) return ''
+    const match = document.cookie.match(/(?:^|;\s*)X-CSRF-TOKEN=([^;]*)/)
+    return match ? decodeURIComponent(match[1]) : ''
+  }
+
+  // 共用 headers
+  const buildHeaders = (): Record<string, string> => {
+    const headers: Record<string, string> = {
+      'Accept-Language': getLocale(),
+    }
+    const csrf = getCsrfToken()
+    if (csrf) headers['X-CSRF-Token'] = csrf
+    return headers
+  }
+
   // ── SSR 系列 ────────────────────────────────────────────────────────
 
   const ssrGet = <T = unknown>(key: string, url: string, query?: Record<string, unknown>) =>
@@ -32,7 +49,7 @@ export const useApi = () => {
       key,
       method: 'GET',
       query,
-      headers: { 'Accept-Language': getLocale() },
+      headers: buildHeaders(),
     })
 
   const ssrPost = <T = unknown>(key: string, url: string, body?: unknown) =>
@@ -45,7 +62,7 @@ export const useApi = () => {
       onRequest({ options }) {
         options.headers = {
           ...(options.headers as Record<string, string>),
-          'Accept-Language': getLocale(),
+          ...buildHeaders(),
         }
       },
     })
@@ -56,14 +73,14 @@ export const useApi = () => {
     $fetch<ResponseModel<T>>(url, {
       method: 'GET',
       query,
-      headers: { 'Accept-Language': getLocale() },
+      headers: buildHeaders(),
     })
 
   const post = <T = unknown>(url: string, body?: unknown) =>
     $fetch<ResponseModel<T>>(url, {
       method: 'POST',
       body,
-      headers: { 'Accept-Language': getLocale() },
+      headers: buildHeaders(),
     })
 
   return { ssrGet, ssrPost, get, post }

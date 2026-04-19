@@ -9,4 +9,4 @@ global using System.ComponentModel.DataAnnotations;
 global using System.ComponentModel.DataAnnotations.Schema;
 global using System.Security.Claims;
 global using Web_Vue.Server.Enums;
-global using Web_Vue.Server.Models;
+global using Web_Vue.Server.ViewModels;

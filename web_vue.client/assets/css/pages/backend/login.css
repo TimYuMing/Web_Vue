@@ -154,7 +154,31 @@
   font-size: 0.5625rem;
   color: var(--backend-text-muted);
 }
+/* ── 全域錯誤提示 ────────────────────────────── */
+.login-error {
+  background-color: #fff5f5;
+  border: 1px solid #feb2b2;
+  color: #c53030;
+  font-weight: 700;
+  font-size: 0.875rem;
+  padding: 0.625rem 0.875rem;
+  border-radius: var(--backend-radius);
+  margin-bottom: 0.75rem;
+}
 
+/* ── 欄位錯誤訊息 ─────────────────────────────── */
+.field-error {
+  color: #e53e3e;
+  font-weight: 700;
+  font-size: 0.8125rem;
+  margin: 0;
+}
+
+/* ── 錯誤狀態輸入框 ──────────────────────────── */
+.input-error {
+  border-color: #e53e3e !important;
+  background-color: #fff5f5 !important;
+}
 /* ── 送出按鈕 ─────────────────────────────── */
 .login-submit {
   width: 100%;
@@ -177,6 +201,11 @@
 
 .login-submit:active {
   transform: scale(0.99);
+}
+
+.login-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 /* ── 底部提示 ─────────────────────────────── */

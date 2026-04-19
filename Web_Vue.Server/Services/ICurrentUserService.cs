@@ -1,4 +1,4 @@
-using Web_Vue.Server.Models.Auth;
+using Web_Vue.Server.ViewModels.Auth;
 
 namespace Web_Vue.Server.Services;
 
@@ -6,7 +6,7 @@ namespace Web_Vue.Server.Services;
 public interface ICurrentUserService
 {
     /// <summary> 登入者完整資訊（從 JWT Claims 反序列化），未登入時為 null </summary>
-    UserInfoModel? UserInfo { get; }
+    UserInfoViewModel? UserInfo { get; }
 
     /// <summary> 是否已通過身份驗證 </summary>
     bool IsAuthenticated { get; }
