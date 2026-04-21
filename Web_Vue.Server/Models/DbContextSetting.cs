@@ -38,8 +38,7 @@ public partial class DbEntityContext : DbContext
 
     private void ApplyAuditFields()
     {
-        // 使用 UTC+8 台灣時間
-        var now = DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(8)).DateTime;
+        var now = DateTime.UtcNow;
         var account = _currentUserService.UserInfo?.Account;
 
         foreach (var entry in ChangeTracker.Entries())

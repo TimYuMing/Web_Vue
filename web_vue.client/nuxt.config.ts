@@ -112,7 +112,12 @@ export default defineNuxtConfig({
     lazy: true,
     langDir: 'locales',
     strategy: 'no_prefix',
-    detectBrowserLanguage: false,
+    detectBrowserLanguage: {
+      useCookie: true,
+      cookieKey: 'i18n_locale',
+      alwaysRedirect: false,
+      fallbackLocale: 'zh-TW',
+    },
   },
 
   // 開發伺服器：與原本 Vite 相同的 port 與 HTTPS 憑證設定

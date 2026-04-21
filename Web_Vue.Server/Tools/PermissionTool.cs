@@ -139,7 +139,7 @@ public class PermissionTool(
             // 先移除關聯的角色權限紀錄
             var pirList = await _permissionInRoleRe.FindAllByBId(dp.ID).ToListAsync();
             if (pirList.Count > 0)
-                context.PermissionInRoles.RemoveRange(pirList);
+                context.PermissionInRole.RemoveRange(pirList);
 
             // 軟刪除權限（實體已被追蹤，直接標記）
             dp.IsDelete = true;

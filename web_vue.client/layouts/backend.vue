@@ -72,8 +72,11 @@ async function handleLogout() {
               {{ loc.name }}
             </button>
           </div>
-          <span class="backend-user-info">{{ user?.name ?? $resx('Txt_管理員') }}</span>
-          <button class="backend-logout-btn" @click="handleLogout">{{ $resx('Txt_登出') || '登出' }}</button>
+          <span class="backend-user-block">
+            <span class="backend-user-name">{{ user?.name ?? $resx('Txt_管理員') }}</span>
+            <span class="backend-user-sep">|</span>
+            <button class="backend-logout-btn" @click="handleLogout">{{ $resx('Txt_登出') || '登出' }}</button>
+          </span>
         </div>
       </header>
 

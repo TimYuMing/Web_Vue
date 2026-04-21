@@ -115,9 +115,36 @@
   color: var(--backend-text);
 }
 
-.backend-user-info {
+.backend-user-block {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   font-size: 0.875rem;
   color: var(--backend-text-muted);
+}
+
+.backend-user-name {
+  text-decoration: underline;
+  cursor: default;
+}
+
+.backend-user-sep {
+  color: var(--backend-border);
+  user-select: none;
+}
+
+.backend-logout-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 0.875rem;
+  color: var(--backend-text-muted);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.backend-logout-btn:hover {
+  color: var(--backend-primary);
 }
 
 /* ── Lang Switcher (topbar) ──────────────── */

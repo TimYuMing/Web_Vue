@@ -1,9 +1,7 @@
+using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System.Text;
 using Web_Vue.Server._Authorization;
 using Web_Vue.Server._Middleware;
 using Web_Vue.Server.Interfaces;
@@ -147,5 +145,12 @@ app.UseAuthorization();
 
 app.MapControllers();
 app.MapFallbackToFile("/index.html");
+
+// 初始化種子資料
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<DbEntityContext>();
+    await SeedData.InitializeAsync(db);
+}
 
 app.Run();

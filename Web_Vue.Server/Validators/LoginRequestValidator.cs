@@ -76,7 +76,7 @@ public class LoginRequestValidator : AbstractValidator<LoginRequest>
 
                 var ip = httpContextAccessor.HttpContext?.Connection.RemoteIpAddress?.ToString() ?? "unknown";
 
-                var userAccount = await db.UserAccounts
+                var userAccount = await db.UserAccount
                     .FirstOrDefaultAsync(u => u.Account == model.Account, ct);
 
                 if (userAccount == null || !PasswordHelper.VerifyPassword(model.Password, userAccount.Password))
@@ -87,7 +87,7 @@ public class LoginRequestValidator : AbstractValidator<LoginRequest>
                     return;
                 }
 
-                var profile = await db.UserProfiles
+                var profile = await db.UserProfile
                     .FirstOrDefaultAsync(p => p.ID == userAccount.ID, ct);
 
                 if (profile == null)

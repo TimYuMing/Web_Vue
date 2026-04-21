@@ -48,7 +48,7 @@ dotnet tool install --global dotnet-ef
 ### 初始化（首次建立，產生初始 Migration）
 
 ```bash
-dotnet ef migrations add InitialCreate --output-dir Entities/Migrations
+dotnet ef migrations add InitialCreate --output-dir Models/Migrations
 ```
 
 ### 新增 Migration（產生異動腳本）

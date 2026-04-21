@@ -60,8 +60,8 @@ public class AuthController(
 
         // ── 載入帳號資料（驗證已通過，帳號必定存在） ──
         var clientIp    = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
-        var userAccount = await db.UserAccounts.FirstOrDefaultAsync(u => u.Account == request.Account);
-        var profile     = await db.UserProfiles.FirstOrDefaultAsync(p => p.ID == userAccount!.ID);
+        var userAccount = await db.UserAccount.FirstOrDefaultAsync(u => u.Account == request.Account);
+        var profile     = await db.UserProfile.FirstOrDefaultAsync(p => p.ID == userAccount!.ID);
 
         // ── 暫時密碼 ──
         if (userAccount!.IsTemplatePassword)
@@ -82,7 +82,7 @@ public class AuthController(
 
         // ── 登入成功 ──
         loginAttemptService.Reset(request.Account, clientIp);
-        userAccount.LatestLoginDate = DateTime.Now;
+        userAccount.LatestLoginDate = DateTime.UtcNow;
         await db.SaveChangesAsync();
 
         var userInfo = await BuildUserInfoAsync(userAccount, profile!);
@@ -167,21 +167,21 @@ public class AuthController(
 
     private async Task<(UserAccount? account, UserProfile? profile)> GetUserByAccountAsync(string account)
     {
-        var ua = await db.UserAccounts.FirstOrDefaultAsync(u => u.Account == account);
+        var ua = await db.UserAccount.FirstOrDefaultAsync(u => u.Account == account);
         var profile = ua != null
-            ? await db.UserProfiles.FirstOrDefaultAsync(p => p.ID == ua.ID)
+            ? await db.UserProfile.FirstOrDefaultAsync(p => p.ID == ua.ID)
             : null;
         return (ua, profile);
     }
 
     private async Task<UserInfoViewModel> BuildUserInfoAsync(UserAccount userAccount, UserProfile profile)
     {
-        var roleIds = await db.RoleInUserAccounts
+        var roleIds = await db.RoleInUserAccount
             .Where(r => r.UserAccountID == userAccount.ID)
             .Select(r => r.RoleID)
             .ToListAsync();
 
-        var roles = await db.Roles
+        var roles = await db.Role
             .Where(r => roleIds.Contains(r.ID) && r.IsEnable)
             .ToListAsync();
 
@@ -206,7 +206,7 @@ public class AuthController(
 
         if (userInfo.IsAdmin)
         {
-            permissions = await db.Permissions
+            permissions = await db.Permission
                 .Where(p => p.IsEnable)
                 .Select(p => p.Code)
                 .Distinct()
@@ -215,9 +215,9 @@ public class AuthController(
         else if (userInfo.RoleList.Count > 0)
         {
             permissions = await (
-                from pir in db.PermissionInRoles
-                join p in db.Permissions on pir.PermissionID equals p.ID
-                join r in db.Roles       on pir.RoleID         equals r.ID
+                from pir in db.PermissionInRole
+                join p in db.Permission on pir.PermissionID equals p.ID
+                join r in db.Role       on pir.RoleID         equals r.ID
                 where userInfo.RoleList.Contains(pir.RoleID) && p.IsEnable && r.IsEnable
                 select p.Code
             ).Distinct().ToListAsync();

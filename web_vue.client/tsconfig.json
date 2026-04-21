@@ -1,0 +1,5 @@
+{
+  // Nuxt 3 的 TypeScript 設定由 .nuxt/tsconfig.json 自動生成
+  // 包含所有 auto-import 的型別宣告（ref、computed、definePageMeta 等）
+  "extends": "./.nuxt/tsconfig.json"
+}

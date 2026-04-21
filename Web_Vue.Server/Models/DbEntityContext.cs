@@ -10,22 +10,22 @@ public partial class DbEntityContext : DbContext
     // ===================== DbSets =====================
 
     /// <summary> 使用者帳號資料表 </summary>
-    public DbSet<UserAccount> UserAccounts => Set<UserAccount>();
+    public DbSet<UserAccount> UserAccount => Set<UserAccount>();
 
     /// <summary> 使用者資訊資料表 </summary>
-    public DbSet<UserProfile> UserProfiles => Set<UserProfile>();
+    public DbSet<UserProfile> UserProfile => Set<UserProfile>();
 
     /// <summary> 角色資料表 </summary>
-    public DbSet<Role> Roles => Set<Role>();
+    public DbSet<Role> Role => Set<Role>();
 
     /// <summary> 角色使用者關聯表 </summary>
-    public DbSet<RoleInUserAccount> RoleInUserAccounts => Set<RoleInUserAccount>();
+    public DbSet<RoleInUserAccount> RoleInUserAccount => Set<RoleInUserAccount>();
 
     /// <summary> 權限資料表 </summary>
-    public DbSet<Permission> Permissions => Set<Permission>();
+    public DbSet<Permission> Permission => Set<Permission>();
 
     /// <summary> 權限角色關聯表 </summary>
-    public DbSet<PermissionInRole> PermissionInRoles => Set<PermissionInRole>();
+    public DbSet<PermissionInRole> PermissionInRole => Set<PermissionInRole>();
 
     // ===================== OnModelCreating =====================
 
