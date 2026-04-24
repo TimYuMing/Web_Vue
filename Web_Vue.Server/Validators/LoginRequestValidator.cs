@@ -10,8 +10,7 @@ public class LoginRequestValidator : AbstractValidator<LoginRequest>
 {
     public LoginRequestValidator(
         IStringLocalizer<SharedResource> _resx,
-        LoginChallengeService _loginChallengeService,
-        LoginAttemptService _loginAttemptService,
+        AuthService _authService,
         IHttpContextAccessor _httpContextAccessor,
         DbEntityContext _dbContext)
     {
@@ -45,7 +44,7 @@ public class LoginRequestValidator : AbstractValidator<LoginRequest>
                 // 圖形驗證碼
                 if (!string.IsNullOrEmpty(model.ChallengeId) && !string.IsNullOrEmpty(model.ValidCode))
                 {
-                    if (!_loginChallengeService.ValidateAndConsume(model.ChallengeId, model.ValidCode))
+                    if (!_authService.ValidateAndConsume(model.ChallengeId, model.ValidCode))
                     {
                         context.AddFailure(nameof(model.ValidCode), _resx["ValidMessage_ValidCode_驗證碼错誤"].Value);
                     }
@@ -59,7 +58,7 @@ public class LoginRequestValidator : AbstractValidator<LoginRequest>
                 var ip = _httpContextAccessor.HttpContext?.Connection.RemoteIpAddress?.ToString() ?? "unknown";
 
                 // 帳號鎖定
-                if (_loginAttemptService.IsLocked(model.Account, ip))
+                if (_authService.IsLocked(model.Account, ip))
                 {
                     context.AddFailure(nameof(model.Password), _resx["ValidMessage_Login_已連續輸入錯誤 5 次，請 15 分鐘後再試"].Value);
                 }
@@ -74,7 +73,7 @@ public class LoginRequestValidator : AbstractValidator<LoginRequest>
 
                 if (userAccount == null || !BCryptTool.VerifyPassword(model.Password, userAccount.Password))
                 {
-                    _loginAttemptService.RegisterFailure(model.Account, ip);
+                    _authService.RegisterFailure(model.Account, ip);
                     context.AddFailure(nameof(model.Password), _resx["ValidMessage_Login_帳號或密碼錯誤，若連續錯誤 5 次，將暫停 15 分鐘禁止登入"].Value);
                     return;
                 }
@@ -84,7 +83,7 @@ public class LoginRequestValidator : AbstractValidator<LoginRequest>
 
                 if (profile == null)
                 {
-                    _loginAttemptService.RegisterFailure(model.Account, ip);
+                    _authService.RegisterFailure(model.Account, ip);
                     context.AddFailure(nameof(model.Account), _resx["ValidMessage_Login_帳號或密碼錯誤，若連續錯誤 5 次，將暫停 15 分鐘禁止登入"].Value);
                     return;
                 }

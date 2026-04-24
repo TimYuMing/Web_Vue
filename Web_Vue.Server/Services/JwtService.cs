@@ -3,6 +3,7 @@ using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Web_Vue.Server.ViewModels.Auth;
+using Web_Vue.Server.ViewModels.Base;
 using Web_Vue.Server.Tools;
 
 namespace Web_Vue.Server.Services;
@@ -12,9 +13,9 @@ public class JwtService
 {
     private readonly JwtSettings _jwtSettings;
 
-    public JwtService(IOptions<JwtSettings> jwtOptions)
+    public JwtService(IOptions<AppSettings> appOptions)
     {
-        _jwtSettings = jwtOptions.Value;
+        _jwtSettings = appOptions.Value.JwtSettings;
     }
 
     /// <summary> 依據使用者資訊模型產生 JWT Token </summary>

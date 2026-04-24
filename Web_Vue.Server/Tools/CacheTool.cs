@@ -1,9 +1,9 @@
 using Microsoft.Extensions.Caching.Memory;
 
-namespace Web_Vue.Server.Services;
+namespace Web_Vue.Server.Tools;
 
-/// <summary> 記憶體快取服務 </summary>
-public class CacheService(IMemoryCache _memoryCache)
+/// <summary> 記憶體快取工具 </summary>
+public class CacheTool(IMemoryCache _memoryCache)
 {
     private static readonly TimeSpan DefaultTtl = TimeSpan.FromHours(24);
 

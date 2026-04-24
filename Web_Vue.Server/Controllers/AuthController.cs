@@ -5,22 +5,22 @@ using Web_Vue.Server._Middleware;
 using Web_Vue.Server.Services;
 using Web_Vue.Server.Tools;
 using Web_Vue.Server.ViewModels.Auth;
+using Web_Vue.Server.ViewModels.Base;
 
 namespace Web_Vue.Server.Controllers;
 
 /// <summary> 身份驗證 API — 登入、登出、Session 查詢、Token 刷新 </summary>
 public class AuthController(
+    UserService _userService,
     AuthService _authService,
     JwtService _jwtService,
-    IOptions<JwtSettings> _jwtOptions,
+    IOptions<AppSettings> _appOptions,
     CurrentUserService _currentUserService,
-    LoginChallengeService _loginChallengeService,
-    LoginAttemptService _loginAttemptService,
     IStringLocalizer<SharedResource> _resx) : BaseController
 {
     private const string JwtCookieName = "jwt";
 
-    private int ExpireMinutes => _jwtOptions.Value.ExpireMinutes;
+    private int ExpireMinutes => _appOptions.Value.JwtSettings.ExpireMinutes;
 
     // ===================== 驗證碼 =====================
 
@@ -29,7 +29,7 @@ public class AuthController(
     [HttpGet("captcha")]
     public IActionResult GetCaptcha()
     {
-        var captcha = _loginChallengeService.Create();
+        var captcha = _authService.CreateChallenge();
         return Success(data: captcha);
     }
 
@@ -52,7 +52,7 @@ public class AuthController(
 
         // ── 載入帳號資料（驗證已通過，帳號必定存在） ──
         var clientIp = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
-        var userInfo = await _authService.GetUserInfoByAccountAsync(request.Account);
+        var userInfo = await _userService.GetUserInfoByAccountAsync(request.Account);
 
         // ── 暫時密碼 ──
         if (userInfo!.IsTemplatePassword)
@@ -69,12 +69,12 @@ public class AuthController(
         }
 
         // ── 登入成功 ──
-        _loginAttemptService.Reset(request.Account, clientIp);
-        await _authService.RecordLoginAsync(userInfo.ID);
+        _authService.ResetAttempt(request.Account, clientIp);
+        await _userService.RecordLoginAsync(userInfo.ID);
 
         var token = _jwtService.GenerateToken(userInfo);
         var expires = DateTime.UtcNow.AddMinutes(ExpireMinutes);
-        var session = await _authService.BuildSessionAsync(userInfo);
+        var session = await _userService.BuildSessionAsync(userInfo);
         session.ExpiresAt = expires;
 
         SetAuthCookies(token, expires);
@@ -106,13 +106,13 @@ public class AuthController(
             return Unauthorized(_resx["SysMsg_VerifyError_未登入"].Value);
         }
 
-        var userInfo = await _authService.GetUserInfoByAccountAsync(claims.Account);
+        var userInfo = await _userService.GetUserInfoByAccountAsync(claims.Account);
         if (userInfo == null)
         {
             return Unauthorized(_resx["SysMsg_VerifyError_未登入"].Value);
         }
 
-        var session = await _authService.BuildSessionAsync(userInfo);
+        var session = await _userService.BuildSessionAsync(userInfo);
 
         var expClaim = User.FindFirstValue(JwtRegisteredClaimNames.Exp);
         session.ExpiresAt = long.TryParse(expClaim, out var exp)
@@ -135,7 +135,7 @@ public class AuthController(
             return Unauthorized(_resx["SysMsg_VerifyError_未登入"].Value);
         }
 
-        var userInfo = await _authService.GetUserInfoByAccountAsync(claims.Account);
+        var userInfo = await _userService.GetUserInfoByAccountAsync(claims.Account);
         if (userInfo == null)
         {
             return Unauthorized(_resx["SysMsg_VerifyError_未登入"].Value);
@@ -143,7 +143,7 @@ public class AuthController(
 
         var token = _jwtService.GenerateToken(userInfo);
         var expires = DateTime.UtcNow.AddMinutes(ExpireMinutes);
-        var session = await _authService.BuildSessionAsync(userInfo);
+        var session = await _userService.BuildSessionAsync(userInfo);
         session.ExpiresAt = expires;
 
         SetAuthCookies(token, expires);

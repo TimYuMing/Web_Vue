@@ -10,6 +10,7 @@ using Web_Vue.Server._Middleware;
 using Web_Vue.Server.Interfaces;
 using Web_Vue.Server.Models;
 using Web_Vue.Server.Tools;
+using Web_Vue.Server.ViewModels.Base;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
@@ -28,17 +29,24 @@ builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 builder.Services.AddDbContext<DbEntityContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// ── 記憶體快取 + 登入相關服務 ──────────────────────────────
+// ── 記憶體快取 ────────────────────────────────────────────────────────────────
 builder.Services.AddMemoryCache();
 
 // ── 當前使用者服務 ──────────────────────────────────────────────────────────────
 builder.Services.AddHttpContextAccessor();
 
-// ── JWT 設定（一次性讀取，後續以 IOptions<JwtSettings> 注入） ─────────────────────
-var jwtConfig = builder.Configuration.GetSection("JwtSettings").Get<JwtSettings>()
-    ?? throw new InvalidOperationException("JwtSettings 未設定");
+// ── AppSettings（統一設定入口，後續以 IOptions<AppSettings> 注入） ────────────────
+builder.Services.Configure<AppSettings>(builder.Configuration);
 
-builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
+var appSettings = builder.Configuration.Get<AppSettings>()
+    ?? throw new InvalidOperationException("AppSettings 讀取失敗");
+
+var jwtSettings = appSettings.JwtSettings;
+
+if (string.IsNullOrWhiteSpace(jwtSettings.SecretKey))
+{
+    throw new InvalidOperationException("JwtSettings:SecretKey 未設定");
+}
 
 // ── JWT 身份驗證 ───────────────────────────────────────────────────────────────
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -50,9 +58,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateAudience         = true,
             ValidateLifetime         = true,
             ValidateIssuerSigningKey = true,
-            ValidIssuer              = jwtConfig.Issuer,
-            ValidAudience            = jwtConfig.Audience,
-            IssuerSigningKey         = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfig.SecretKey)),
+            ValidIssuer              = jwtSettings.Issuer,
+            ValidAudience            = jwtSettings.Audience,
+            IssuerSigningKey         = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecretKey)),
             ClockSkew                = TimeSpan.Zero,
         };
         // 從 HttpOnly Cookie 讀取 JWT（取代 Authorization Header）
@@ -105,12 +113,13 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-// 允許 Nuxt 開發伺服器（port 64910）存取 API
+// ── CORS：從 appsettings 讀取允許來源清單 ────────────────────────────────────────
+var allowedOrigins = appSettings.Cors.AllowedOrigins;
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
-        policy.WithOrigins("https://localhost:64910")
+        policy.WithOrigins([.. allowedOrigins])
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials();
@@ -157,3 +166,4 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.Run();
+

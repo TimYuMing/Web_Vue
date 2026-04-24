@@ -1,6 +1,7 @@
 using Autofac;
 using Web_Vue.Server.Interfaces;
 using Web_Vue.Server.Repositories.Base;
+using Web_Vue.Server.Tools;
 
 namespace Web_Vue.Server;
 
@@ -9,6 +10,7 @@ namespace Web_Vue.Server;
 /// — Services 命名空間下所有 class
 /// — Repositories 命名空間下所有 class
 /// — IBaseRepository&lt;T&gt; → BaseRepository&lt;T&gt; 泛型開放型別
+/// — CacheTool（Tools 層唯一需要 DI 注入的工具類別）
 /// </summary>
 public class AppModule : Module
 {
@@ -33,6 +35,11 @@ public class AppModule : Module
         // IBaseRepository<T> 泛型開放型別
         builder.RegisterGeneric(typeof(BaseRepository<>))
                .As(typeof(IBaseRepository<>))
+               .InstancePerLifetimeScope();
+
+        // CacheTool：Tools 層中唯一需要 DI 注入的類別（依賴 IMemoryCache）
+        builder.RegisterType<CacheTool>()
+               .AsSelf()
                .InstancePerLifetimeScope();
     }
 }

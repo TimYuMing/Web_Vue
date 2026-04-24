@@ -5,13 +5,13 @@ using Web_Vue.Server.Models;
 using Web_Vue.Server.Models.Entities;
 using Web_Vue.Server.Repositories;
 
-namespace Web_Vue.Server.Tools;
+namespace Web_Vue.Server.Services;
 
 /// <summary>
-/// 權限控制工具
+/// 權限服務
 /// — 提供權限掃描（自動同步 DB 與 PermissionCodes 定義）及使用者權限查詢功能
 /// </summary>
-public class PermissionTool(
+public class PermissionService(
     DbEntityContext _context,
     IBaseRepository<Permission> _permissionRe,
     IBaseRepository<Role> _roleRe)
@@ -118,10 +118,10 @@ public class PermissionTool(
                 else
                 {
                     var needsUpdate = childPermission.ParentID != parentPermission.ID;
-                if (needsUpdate)
-                {
-                    childPermission.ParentID = parentPermission.ID;
-                }
+                    if (needsUpdate)
+                    {
+                        childPermission.ParentID = parentPermission.ID;
+                    }
 
                     needsUpdate |= UpdatePermissionAttrs(childPermission, childAttr, null);
                     if (needsUpdate)
