@@ -86,7 +86,10 @@ public class BaseRepository<T> : IBaseRepository<T> where T : class, IEntity
     /// <summary> 刪除 (自動判斷真刪或假刪) </summary>
     public virtual async Task<int> DeleteAsync(T entity)
     {
-        if (entity == null) return 0;
+        if (entity == null)
+        {
+            return 0;
+        }
 
         if (entity is IUpdateAudit audit)
         {

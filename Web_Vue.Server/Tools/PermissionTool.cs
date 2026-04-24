@@ -12,12 +12,12 @@ namespace Web_Vue.Server.Tools;
 /// — 提供權限掃描（自動同步 DB 與 PermissionCodes 定義）及使用者權限查詢功能
 /// </summary>
 public class PermissionTool(
-    DbEntityContext context,
-    IBaseRepository<Permission> permissionRe,
-    IBaseRepository<Role> roleRe)
+    DbEntityContext _context,
+    IBaseRepository<Permission> _permissionRe,
+    IBaseRepository<Role> _roleRe)
 {
     private readonly IBaseMultipleRepository<PermissionInRole> _permissionInRoleRe
-        = new PermissionInRoleRepository(context);
+        = new PermissionInRoleRepository(_context);
 
     private List<PermissionCacheItem>? _permissionCacheList;
 
@@ -29,7 +29,7 @@ public class PermissionTool(
     /// </summary>
     public async Task ScanningAsync()
     {
-        var existPermissionList = await permissionRe.FindAll().ToListAsync();
+        var existPermissionList = await _permissionRe.FindAll().ToListAsync();
 
         // 資料夾節點：key = 路徑碼（如 "Backend.Linkchain"），value = DB 的 Permission.ID
         var parentCodeDic = new Dictionary<string, int>();
@@ -37,7 +37,7 @@ public class PermissionTool(
         var childCodeList = new List<string>();
 
         // 取得所有管理者角色及其已擁有的權限 ID
-        var adminRoles = await roleRe.FindAll().Where(r => r.IsAdmin).ToListAsync();
+        var adminRoles = await _roleRe.FindAll().Where(r => r.IsAdmin).ToListAsync();
         var adminRolePermissionMap = new Dictionary<int, List<int>>();
         foreach (var role in adminRoles)
             adminRolePermissionMap[role.ID] = await _permissionInRoleRe.FindAllBIdByAIdAsync(role.ID);
@@ -48,7 +48,7 @@ public class PermissionTool(
                         t.FullName.StartsWith("Web_Vue.Server._Authorization.PermissionCodes+"))
             .OrderBy(t => t.FullName);
 
-        await using var transaction = await context.Database.BeginTransactionAsync();
+        await using var transaction = await _context.Database.BeginTransactionAsync();
 
         foreach (var ac in authClasses)
         {
@@ -77,12 +77,12 @@ public class PermissionTool(
                     IsDisplay = parentAttr.IsDisplay,
                     IsEnable = true
                 };
-                await permissionRe.InsertAsync(parentPermission);
+                await _permissionRe.InsertAsync(parentPermission);
             }
             else
             {
                 if (UpdatePermissionAttrs(parentPermission, parentAttr, parentDbId))
-                    await permissionRe.UpdateAsync(parentPermission);
+                    await _permissionRe.UpdateAsync(parentPermission);
             }
 
             await AssignToAdminRolesAsync(parentPermission.ID, adminRolePermissionMap);
@@ -113,15 +113,21 @@ public class PermissionTool(
                         IsDisplay = childAttr.IsDisplay,
                         IsEnable = true
                     };
-                    await permissionRe.InsertAsync(childPermission);
+                    await _permissionRe.InsertAsync(childPermission);
                 }
                 else
                 {
                     var needsUpdate = childPermission.ParentID != parentPermission.ID;
-                    if (needsUpdate) childPermission.ParentID = parentPermission.ID;
+                if (needsUpdate)
+                {
+                    childPermission.ParentID = parentPermission.ID;
+                }
 
                     needsUpdate |= UpdatePermissionAttrs(childPermission, childAttr, null);
-                    if (needsUpdate) await permissionRe.UpdateAsync(childPermission);
+                    if (needsUpdate)
+                    {
+                        await _permissionRe.UpdateAsync(childPermission);
+                    }
                 }
 
                 await AssignToAdminRolesAsync(childPermission.ID, adminRolePermissionMap);
@@ -139,14 +145,14 @@ public class PermissionTool(
             // 先移除關聯的角色權限紀錄
             var pirList = await _permissionInRoleRe.FindAllByBId(dp.ID).ToListAsync();
             if (pirList.Count > 0)
-                context.PermissionInRole.RemoveRange(pirList);
+                _context.PermissionInRole.RemoveRange(pirList);
 
             // 軟刪除權限（實體已被追蹤，直接標記）
             dp.IsDelete = true;
         }
 
         if (toDelete.Count > 0)
-            await context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
 
         await transaction.CommitAsync();
 
@@ -195,7 +201,10 @@ public class PermissionTool(
     {
         foreach (var (roleId, permIds) in adminRolePermissionMap)
         {
-            if (permIds.Contains(permissionId)) continue;
+            if (permIds.Contains(permissionId))
+            {
+                continue;
+            }
             await _permissionInRoleRe.InsertRangeAsync(
             [
                 new PermissionInRole { RoleID = roleId, PermissionID = permissionId }
@@ -276,7 +285,10 @@ public class PermissionTool(
     private static string? GetParentFolderCode(Type type)
     {
         var declaring = type.DeclaringType;
-        if (declaring == null || declaring.Name == "PermissionCodes") return null;
+        if (declaring == null || declaring.Name == "PermissionCodes")
+        {
+            return null;
+        }
         return GetFolderCode(declaring);
     }
 
@@ -284,9 +296,12 @@ public class PermissionTool(
 
     private async Task<List<PermissionCacheItem>> GetPermissionCacheListAsync()
     {
-        if (_permissionCacheList != null) return _permissionCacheList;
+        if (_permissionCacheList != null)
+        {
+            return _permissionCacheList;
+        }
 
-        _permissionCacheList = await permissionRe.FindAll()
+        _permissionCacheList = await _permissionRe.FindAll()
             .Select(p => new PermissionCacheItem
             {
                 Id = p.ID,

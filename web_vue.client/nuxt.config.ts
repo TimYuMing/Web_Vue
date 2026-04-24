@@ -41,12 +41,16 @@ function generateI18nLocales(): void {
     console.warn('[i18n-gen] Resources 目錄不存在，跳過生成')
     return
   }
-  if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true })
+  if (!fs.existsSync(outputDir)) {
+    fs.mkdirSync(outputDir, { recursive: true })
+  }
 
   const resxFiles = fs.readdirSync(resxDir).filter((f) => /^SharedResource\..+\.resx$/.test(f))
   for (const file of resxFiles) {
     const m = file.match(/^SharedResource\.(.+)\.resx$/)
-    if (!m) continue
+    if (!m) {
+      continue
+    }
     const locale = m[1]
     const content = fs.readFileSync(path.join(resxDir, file), 'utf-8')
     const translations = parseResx(content)

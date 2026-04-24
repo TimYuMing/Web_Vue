@@ -5,14 +5,18 @@
  */
 export default defineNuxtRouteMiddleware(async (to) => {
   // 只處理後台路徑
-  if (!to.path.startsWith('/backend')) return
+  if (!to.path.startsWith('/backend')) {
+    return
+  }
 
   const { isLoggedIn, fetchSession } = useAuth()
   const isLoginPage = to.path === '/backend/login'
 
   // SSR 環境無法驗證 Cookie，直接導向登入頁（避免頁面閃現）
   if (import.meta.server) {
-    if (!isLoginPage) return navigateTo('/backend/login')
+    if (!isLoginPage) {
+      return navigateTo('/backend/login')
+    }
     return
   }
 

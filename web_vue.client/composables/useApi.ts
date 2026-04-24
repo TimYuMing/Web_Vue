@@ -27,7 +27,9 @@ export const useApi = () => {
 
   // 從 Cookie 讀取 CSRF Token（登入後由後端設定）
   const getCsrfToken = (): string => {
-    if (import.meta.server) return ''
+    if (import.meta.server) {
+      return ''
+    }
     const match = document.cookie.match(/(?:^|;\s*)X-CSRF-TOKEN=([^;]*)/)
     return match ? decodeURIComponent(match[1]) : ''
   }
@@ -38,7 +40,9 @@ export const useApi = () => {
       'Accept-Language': getLocale(),
     }
     const csrf = getCsrfToken()
-    if (csrf) headers['X-CSRF-Token'] = csrf
+    if (csrf) {
+      headers['X-CSRF-Token'] = csrf
+    }
     return headers
   }
 
@@ -52,7 +56,7 @@ export const useApi = () => {
       headers: buildHeaders(),
     })
 
-  const ssrPost = <T = unknown>(key: string, url: string, body?: unknown) =>
+  const ssrPost = <T = unknown>(key: string, url: string, body?: BodyInit | Record<string, any> | null) =>
     useFetch<ResponseModel<T>>(url, {
       key,
       method: 'POST',
@@ -60,10 +64,10 @@ export const useApi = () => {
       server: false,
       immediate: false,
       onRequest({ options }) {
-        options.headers = {
-          ...(options.headers as Record<string, string>),
-          ...buildHeaders(),
-        }
+        const existing = options.headers instanceof Headers
+          ? Object.fromEntries(options.headers.entries())
+          : (options.headers as Record<string, string> | undefined) ?? {}
+        options.headers = new Headers({ ...existing, ...buildHeaders() })
       },
     })
 
@@ -76,7 +80,7 @@ export const useApi = () => {
       headers: buildHeaders(),
     })
 
-  const post = <T = unknown>(url: string, body?: unknown) =>
+  const post = <T = unknown>(url: string, body?: BodyInit | Record<string, any> | null) =>
     $fetch<ResponseModel<T>>(url, {
       method: 'POST',
       body,

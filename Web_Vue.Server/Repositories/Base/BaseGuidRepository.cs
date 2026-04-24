@@ -90,7 +90,10 @@ public class BaseGuidRepository<T> : IBaseGuidRepository<T> where T : class, ISt
     /// <summary> 刪除 (自動判斷真刪或假刪) </summary>
     public virtual async Task<Guid> DeleteAsync(T entity)
     {
-        if (entity == null) return Guid.Empty;
+        if (entity == null)
+        {
+            return Guid.Empty;
+        }
 
         if (entity is IUpdateAudit audit)
         {

@@ -21,7 +21,7 @@ public class ApiPermissionFilter : Attribute, IAsyncAuthorizationFilter
     {
         var sp = context.HttpContext.RequestServices;
         var authService = sp.GetRequiredService<IAuthorizationService>();
-        var currentUserService = sp.GetRequiredService<ICurrentUserService>();
+        var currentUserService = sp.GetRequiredService<CurrentUserService>();
         var resx = sp.GetRequiredService<IStringLocalizer<SharedResource>>();
 
         var userInfo = currentUserService.UserInfo;

@@ -39,7 +39,10 @@ public static class UserInfoTool
     {
         try
         {
-            if (user == null) return null;
+            if (user == null)
+            {
+                return null;
+            }
 
             // 新版：個別 Claim
             var idText = user.FindFirstValue(UserIdClaimType)
@@ -60,13 +63,13 @@ public static class UserInfoTool
 
                 return new UserInfoViewModel
                 {
-                    ID           = userId,
-                    Account      = user.FindFirstValue(AccountClaimType) ?? string.Empty,
-                    Name         = user.FindFirstValue(NameClaimType)
+                    ID = userId,
+                    Account = user.FindFirstValue(AccountClaimType) ?? string.Empty,
+                    Name = user.FindFirstValue(NameClaimType)
                                 ?? user.FindFirstValue(ClaimTypes.Name)
                                 ?? string.Empty,
-                    RoleList      = roleList,
-                    IsAdmin       = isAdmin,
+                    RoleList = roleList,
+                    IsAdmin = isAdmin,
                     IsMaintaining = isMaintaining,
                 };
             }
@@ -74,7 +77,9 @@ public static class UserInfoTool
             // 舊版回退：完整 JSON
             var json = user.Claims.FirstOrDefault(x => x.Type == LegacyUserKey)?.Value;
             if (!string.IsNullOrEmpty(json))
+            {
                 return JsonSerializer.Deserialize<UserInfoViewModel>(json);
+            }
 
             return null;
         }

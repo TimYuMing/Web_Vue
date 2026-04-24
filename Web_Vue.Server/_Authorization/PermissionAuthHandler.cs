@@ -7,26 +7,13 @@ using Web_Vue.Server.Services;
 namespace Web_Vue.Server._Authorization;
 
 /// <summary> 權限驗證 Handler </summary>
-public class PermissionAuthHandler : AuthorizationHandler<PermissionAuthRequirement>
+public class PermissionAuthHandler(
+    DbEntityContext _context,
+    IBaseRepository<Role> _roleRe,
+    IBaseRepository<Permission> _permissionRe,
+    CurrentUserService _currentUserService
+) : AuthorizationHandler<PermissionAuthRequirement>
 {
-    private readonly DbEntityContext _context;
-    private readonly IBaseRepository<Role> _roleRe;
-    private readonly IBaseRepository<Permission> _permissionRe;
-    private readonly ICurrentUserService _currentUserService;
-
-    /// <summary> 建構子 </summary>
-    public PermissionAuthHandler(
-        DbEntityContext context,
-        IBaseRepository<Role> roleRepository,
-        IBaseRepository<Permission> permissionRepository,
-        ICurrentUserService currentUserService)
-    {
-        _context = context;
-        _roleRe = roleRepository;
-        _permissionRe = permissionRepository;
-        _currentUserService = currentUserService;
-    }
-
     /// <inheritdoc/>
     protected override async Task<Task> HandleRequirementAsync(
         AuthorizationHandlerContext context, PermissionAuthRequirement requirement)
@@ -46,8 +33,8 @@ public class PermissionAuthHandler : AuthorizationHandler<PermissionAuthRequirem
 
             var userPermissions = await (
                 from role in _roleRe.FindAll()
-                join pir in permissionInRoleRe.FindAll() on role.ID equals pir.RoleID
-                join permission in _permissionRe.FindAll() on pir.PermissionID equals permission.ID
+                join permissionInRole in permissionInRoleRe.FindAll() on role.ID equals permissionInRole.RoleID
+                join permission in _permissionRe.FindAll() on permissionInRole.PermissionID equals permission.ID
                 where role.IsEnable && userInfo.RoleList.Contains(role.ID) && permission.IsEnable
                 select permission.Code
             ).ToListAsync();

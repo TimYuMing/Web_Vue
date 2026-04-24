@@ -6,9 +6,9 @@ namespace Web_Vue.Server.Models;
 /// <summary> 應用程式資料庫 Context — 建構子、SaveChanges、稽核欄位邏輯 </summary>
 public partial class DbEntityContext : DbContext
 {
-    private readonly ICurrentUserService _currentUserService;
+    private readonly CurrentUserService _currentUserService;
 
-    public DbEntityContext(DbContextOptions<DbEntityContext> options, ICurrentUserService currentUserService)
+    public DbEntityContext(DbContextOptions<DbEntityContext> options, CurrentUserService currentUserService)
         : base(options)
     {
         _currentUserService = currentUserService;

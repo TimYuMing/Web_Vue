@@ -1,7 +1,7 @@
 namespace Web_Vue.Server.Services;
 
 /// <summary> 登入失敗鎖定服務（依帳號 + IP） </summary>
-public class LoginAttemptService(CacheService cacheService)
+public class LoginAttemptService(CacheService _cacheService)
 {
     private const string CacheKeyPrefix = "ApiLoginAttempt";
     private const int MaxFailCount = 5;
@@ -24,21 +24,25 @@ public class LoginAttemptService(CacheService cacheService)
 
         // 已鎖定中，不重複計數
         if (state.BanUntilUtc.HasValue && state.BanUntilUtc.Value > now)
+        {
             return;
+        }
 
         state.FailCount++;
         if (state.FailCount >= MaxFailCount)
+        {
             state.BanUntilUtc = now.Add(BanDuration);
+        }
 
-        cacheService.SetCache(key, state, StateTtl);
+        _cacheService.SetCache(key, state, StateTtl);
     }
 
     /// <summary> 清除失敗紀錄（登入成功後呼叫） </summary>
     public void Reset(string account, string clientIp)
-        => cacheService.RemoveCache(BuildKey(account, clientIp));
+        => _cacheService.RemoveCache(BuildKey(account, clientIp));
 
     private LoginAttemptState GetState(string account, string clientIp)
-        => cacheService.GetCache<LoginAttemptState>(BuildKey(account, clientIp)) ?? new LoginAttemptState();
+        => _cacheService.GetCache<LoginAttemptState>(BuildKey(account, clientIp)) ?? new LoginAttemptState();
 
     private static string BuildKey(string account, string clientIp)
     {

@@ -1,16 +1,18 @@
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Web_Vue.Server;
 using Web_Vue.Server._Authorization;
 using Web_Vue.Server._Middleware;
 using Web_Vue.Server.Interfaces;
 using Web_Vue.Server.Models;
-using Web_Vue.Server.Repositories.Base;
-using Web_Vue.Server.Services;
 using Web_Vue.Server.Tools;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
 // Add services to the container.
 
@@ -28,19 +30,17 @@ builder.Services.AddDbContext<DbEntityContext>(options =>
 
 // ── 記憶體快取 + 登入相關服務 ──────────────────────────────
 builder.Services.AddMemoryCache();
-builder.Services.AddScoped<CacheService>();
-builder.Services.AddScoped<LoginChallengeService>();
-builder.Services.AddScoped<LoginAttemptService>();
 
 // ── 當前使用者服務 ──────────────────────────────────────────────────────────────
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
-builder.Services.AddScoped<IJwtService, JwtService>();
+
+// ── JWT 設定（一次性讀取，後續以 IOptions<JwtSettings> 注入） ─────────────────────
+var jwtConfig = builder.Configuration.GetSection("JwtSettings").Get<JwtSettings>()
+    ?? throw new InvalidOperationException("JwtSettings 未設定");
+
+builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
 
 // ── JWT 身份驗證 ───────────────────────────────────────────────────────────────
-var jwtSecret = builder.Configuration["JwtSettings:SecretKey"]
-    ?? throw new InvalidOperationException("JwtSettings:SecretKey 未設定");
-
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -50,9 +50,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateAudience         = true,
             ValidateLifetime         = true,
             ValidateIssuerSigningKey = true,
-            ValidIssuer              = builder.Configuration["JwtSettings:Issuer"],
-            ValidAudience            = builder.Configuration["JwtSettings:Audience"],
-            IssuerSigningKey         = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret)),
+            ValidIssuer              = jwtConfig.Issuer,
+            ValidAudience            = jwtConfig.Audience,
+            IssuerSigningKey         = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfig.SecretKey)),
             ClockSkew                = TimeSpan.Zero,
         };
         // 從 HttpOnly Cookie 讀取 JWT（取代 Authorization Header）
@@ -62,7 +62,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             {
                 var token = ctx.Request.Cookies["jwt"];
                 if (!string.IsNullOrWhiteSpace(token))
+                {
                     ctx.Token = token;
+                }
                 return Task.CompletedTask;
             }
         };
@@ -71,9 +73,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddAuthorization();
 
 // ── 權限驗證 ──────────────────────────────────────────────────────────────────
-builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
 builder.Services.AddScoped<IAuthorizationHandler, PermissionAuthHandler>();
-builder.Services.AddScoped<PermissionTool>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -116,6 +116,9 @@ builder.Services.AddCors(options =>
               .AllowCredentials();
     });
 });
+
+// ── Autofac：自動掃描 Services / Repositories 並以 Scoped 生命週期註冊 ──────────
+builder.Host.ConfigureContainer<ContainerBuilder>(c => c.RegisterModule<AppModule>());
 
 var app = builder.Build();
 

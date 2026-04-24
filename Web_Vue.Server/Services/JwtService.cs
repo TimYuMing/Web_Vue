@@ -1,5 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Web_Vue.Server.ViewModels.Auth;
 using Web_Vue.Server.Tools;
@@ -7,22 +8,24 @@ using Web_Vue.Server.Tools;
 namespace Web_Vue.Server.Services;
 
 /// <summary> 使用 HMAC-SHA256 簽章產生 JWT Token </summary>
-public class JwtService : IJwtService
+public class JwtService
 {
-    private readonly IConfiguration _configuration;
+    private readonly JwtSettings _jwtSettings;
 
-    public JwtService(IConfiguration configuration)
+    public JwtService(IOptions<JwtSettings> jwtOptions)
     {
-        _configuration = configuration;
+        _jwtSettings = jwtOptions.Value;
     }
 
-    /// <inheritdoc/>
+    /// <summary> 依據使用者資訊模型產生 JWT Token </summary>
     public string GenerateToken(UserInfoViewModel userInfo)
     {
-        var secretKey = _configuration["JwtSettings:SecretKey"]
-            ?? throw new InvalidOperationException("JwtSettings:SecretKey 未設定");
+        if (string.IsNullOrWhiteSpace(_jwtSettings.SecretKey))
+        {
+            throw new InvalidOperationException("JwtSettings:SecretKey 未設定");
+        }
 
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
+        var key         = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.SecretKey));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
         var roleListText = string.Join(",", (userInfo.RoleList ?? []).Distinct());
@@ -43,14 +46,12 @@ public class JwtService : IJwtService
                       ClaimValueTypes.Integer64),
         };
 
-        var expireMinutes = int.TryParse(_configuration["JwtSettings:ExpireMinutes"], out var m) ? m : 60;
-
         var token = new JwtSecurityToken(
-            issuer:             _configuration["JwtSettings:Issuer"],
-            audience:           _configuration["JwtSettings:Audience"],
+            issuer:             _jwtSettings.Issuer,
+            audience:           _jwtSettings.Audience,
             claims:             claims,
             notBefore:          DateTime.UtcNow,
-            expires:            DateTime.UtcNow.AddMinutes(expireMinutes),
+            expires:            DateTime.UtcNow.AddMinutes(_jwtSettings.ExpireMinutes),
             signingCredentials: credentials);
 
         return new JwtSecurityTokenHandler().WriteToken(token);

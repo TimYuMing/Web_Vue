@@ -1,9 +1,9 @@
-namespace Web_Vue.Server.Helpers;
+namespace Web_Vue.Server.Tools;
 
 /// <summary>
 /// 密碼雜湊輔助工具，使用 BCrypt 演算法
 /// </summary>
-public static class PasswordHelper
+public static class BCryptTool
 {
     /// <summary>
     /// 將明文密碼雜湊化
