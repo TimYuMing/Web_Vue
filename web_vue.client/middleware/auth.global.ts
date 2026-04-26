@@ -12,16 +12,10 @@ export default defineNuxtRouteMiddleware(async (to) => {
   const { isLoggedIn, fetchSession } = useAuth()
   const isLoginPage = to.path === '/backend/login'
 
-  // SSR 環境無法驗證 Cookie，直接導向登入頁（避免頁面閃現）
-  if (import.meta.server) {
-    if (!isLoginPage) {
-      return navigateTo('/backend/login')
-    }
-    return
-  }
-
-  // 如果還沒有 session（例如瀏覽器重整），嘗試從 /me 恢復
-  if (!isLoggedIn.value) {
+  // 只有在尚未有 session 時才呼叫 /me 嘗試恢復：
+  // - 受保護頁面：必定要嘗試（重整後 session 記憶體會清空）
+  // - login 頁面：不需要，未登入必然 401 只是噪音；若快取中已有 session 則下方重導即可
+  if (!isLoggedIn.value && !isLoginPage) {
     await fetchSession()
   }
 

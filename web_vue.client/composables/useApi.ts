@@ -27,10 +27,9 @@ export const useApi = () => {
 
   // 從 Cookie 讀取 CSRF Token（登入後由後端設定）
   const getCsrfToken = (): string => {
-    if (import.meta.server) {
-      return ''
-    }
-    const match = document.cookie.match(/(?:^|;\s*)X-CSRF-TOKEN=([^;]*)/)
+    if (import.meta.server) return ''
+    // Config.CsrfCookieName = "csrf-token"
+    const match = document.cookie.match(/(?:^|;\s*)csrf-token=([^;]*)/)
     return match ? decodeURIComponent(match[1]) : ''
   }
 
@@ -39,10 +38,22 @@ export const useApi = () => {
     const headers: Record<string, string> = {
       'Accept-Language': getLocale(),
     }
-    const csrf = getCsrfToken()
-    if (csrf) {
-      headers['X-CSRF-Token'] = csrf
+
+    if (import.meta.server) {
+      // SSR：把瀏覽器的 Cookie header 轉發給後端，讓 JWT 驗證能運作
+      // GET 請求已在 CSRF middleware 豈免，安全
+      const reqHeaders = useRequestHeaders(['cookie'])
+      if (reqHeaders.cookie) {
+        headers['cookie'] = reqHeaders.cookie
+      }
+    } else {
+      // Client：加入 CSRF token
+      const csrf = getCsrfToken()
+      if (csrf) {
+        headers['X-CSRF-Token'] = csrf
+      }
     }
+
     return headers
   }
 

@@ -221,4 +221,26 @@
   <data name="RedirectMessage_ValidCode_密碼已過期，請進行重設密碼申請" xml:space="preserve">
     <value>Your password has expired. Please apply for a password reset</value>
   </data>
+
+  <!-- ===== Linkchain Tool Page ===== -->
+  <data name="Txt_凌誠" xml:space="preserve">
+    <value>Linkchain</value>
+  </data>
+  <data name="Txt_功能頁" xml:space="preserve">
+    <value>Tools</value>
+  </data>
+  <data name="Txt_權限掃描" xml:space="preserve">
+    <value>Permission Scan</value>
+  </data>
+  <data name="Txt_權限掃描成功" xml:space="preserve">
+    <value>[Permission Scan Successful]</value>
+  </data>
+
+  <!-- ===== Common Buttons ===== -->
+  <data name="Btn_確定" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="Btn_取消" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
 </root>

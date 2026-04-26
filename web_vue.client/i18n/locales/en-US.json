@@ -54,5 +54,11 @@
   "ValidMessage_Login_帳號或密碼錯誤，若連續錯誤 5 次，將暫停 15 分鐘禁止登入": "Invalid account or password. After 5 failed attempts, login will be locked for 15 minutes",
   "ValidMessage_Login_帳號已停用": "This account has been disabled. Please contact the administrator",
   "RedirectMessage_ValidCode_請進行重設密碼": "Please reset your password",
-  "RedirectMessage_ValidCode_密碼已過期，請進行重設密碼申請": "Your password has expired. Please apply for a password reset"
+  "RedirectMessage_ValidCode_密碼已過期，請進行重設密碼申請": "Your password has expired. Please apply for a password reset",
+  "Txt_凌誠": "Linkchain",
+  "Txt_功能頁": "Tools",
+  "Txt_權限掃描": "Permission Scan",
+  "Txt_權限掃描成功": "[Permission Scan Successful]",
+  "Btn_確定": "OK",
+  "Btn_取消": "Cancel"
 }

@@ -221,4 +221,26 @@
   <data name="RedirectMessage_ValidCode_密碼已過期，請進行重設密碼申請" xml:space="preserve">
     <value>密碼已過期，請進行重設密碼申請</value>
   </data>
+
+  <!-- ===== Linkchain 功能頁 ===== -->
+  <data name="Txt_凌誠" xml:space="preserve">
+    <value>凌誠</value>
+  </data>
+  <data name="Txt_功能頁" xml:space="preserve">
+    <value>功能頁</value>
+  </data>
+  <data name="Txt_權限掃描" xml:space="preserve">
+    <value>權限掃描</value>
+  </data>
+  <data name="Txt_權限掃描成功" xml:space="preserve">
+    <value>【權限掃描成功】</value>
+  </data>
+
+  <!-- ===== 共用按鈕 ===== -->
+  <data name="Btn_確定" xml:space="preserve">
+    <value>確定</value>
+  </data>
+  <data name="Btn_取消" xml:space="preserve">
+    <value>取消</value>
+  </data>
 </root>
