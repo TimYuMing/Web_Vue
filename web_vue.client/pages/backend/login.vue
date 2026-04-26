@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { ResultType } from '~/types/api'
-import { LoginFailType } from '~/types/auth'
+import { ResultType } from '~/types/enum'
 
 definePageMeta({
   layout: false,
@@ -30,8 +29,8 @@ const fieldErrors = ref<Record<string, string[]>>({})
 async function loadCaptcha() {
   const captcha = await fetchCaptcha()
   if (captcha) {
-    captchaImage.value = captcha.imageBase64
-    challengeId.value = captcha.challengeId
+    captchaImage.value = captcha.ImageBase64
+    challengeId.value = captcha.ChallengeId
   }
 }
 
@@ -50,32 +49,32 @@ async function handleLogin() {
   isLoading.value = true
   try {
     const res = await login({
-      account: form.account,
-      password: form.password,
-      challengeId: challengeId.value,
-      validCode: form.validCode,
+      Account: form.account,
+      Password: form.password,
+      ChallengeId: challengeId.value,
+      ValidCode: form.validCode,
     })
 
-    if (res.status === ResultType.Success) {
+    if (res.Status === ResultType.Success.Value) {
       // 登入成功 → middleware 會讓 /backend/home 通過
       await navigateTo('/backend/home')
       return
     }
 
     // 登入失敗
-    if (res.errorList?.length) {
-      for (const err of res.errorList) {
-        fieldErrors.value[err.key] = err.errorTextList
+    if (res.ErrorList?.length) {
+      for (const err of res.ErrorList) {
+        fieldErrors.value[err.Key] = err.ErrorTextList
       }
     }
 
-    if (res.message) {
-      errorMessage.value = res.message
+    if (res.Message) {
+      errorMessage.value = res.Message
     }
 
-    const failData = res.data
-    if (failData?.redirectPath) {
-      errorMessage.value = res.message || '請依指示操作'
+    const failData = res.Data
+    if (failData?.RedirectPath) {
+      errorMessage.value = res.Message || '請依指示操作'
       // 密碼過期 / 暫時密碼 → 導向特定頁面（未來可擴充）
     }
   }

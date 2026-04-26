@@ -29,7 +29,7 @@ public class ApiPermissionFilter : Attribute, IAsyncAuthorizationFilter
         // 未登入
         if (userInfo is not { IsLogin: true })
         {
-            context.Result = new ObjectResult(new ResponseViewModel
+            context.Result = new ObjectResult(new ResponseViewModel<object>
             {
                 Status = ResultType.Fail,
                 Message = resx["SysMsg_VerifyError_未登入"].Value
@@ -43,7 +43,7 @@ public class ApiPermissionFilter : Attribute, IAsyncAuthorizationFilter
         // 系統維護中
         if (userInfo.IsMaintaining)
         {
-            context.Result = new ObjectResult(new ResponseViewModel
+            context.Result = new ObjectResult(new ResponseViewModel<object>
             {
                 Status = ResultType.Fail,
                 Message = resx["Txt_系統維護中"].Value
@@ -60,7 +60,7 @@ public class ApiPermissionFilter : Attribute, IAsyncAuthorizationFilter
 
         if (!authResult.Succeeded)
         {
-            context.Result = new ObjectResult(new ResponseViewModel
+            context.Result = new ObjectResult(new ResponseViewModel<object>
             {
                 Status = ResultType.Fail,
                 Message = resx["RedirectMessage_Base_您無權限進入"].Value

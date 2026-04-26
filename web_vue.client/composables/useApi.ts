@@ -1,4 +1,4 @@
-import type { ResponseModel } from '~/types/api'
+import type { ResponseViewModel } from '~/types/viewmodel'
 
 /**
  * 共用 API composable（Nuxt auto-import，無需手動引入）
@@ -15,7 +15,7 @@ import type { ResponseModel } from '~/types/api'
  *           await execute()   // 在 click handler 中觸發
  *
  * ─ 事件處理器系列（$fetch 包裝，在 function / async handler 中呼叫）──────
- *   get(url, query?)   直接回傳 Promise<ResponseModel<T>>
+ *   get(url, query?)   直接回傳 Promise<ResponseViewModel<T>>
  *   post(url, body?)   同上
  */
 export const useApi = () => {
@@ -49,7 +49,7 @@ export const useApi = () => {
   // ── SSR 系列 ────────────────────────────────────────────────────────
 
   const ssrGet = <T = unknown>(key: string, url: string, query?: Record<string, unknown>) =>
-    useFetch<ResponseModel<T>>(url, {
+    useFetch<ResponseViewModel<T>>(url, {
       key,
       method: 'GET',
       query,
@@ -57,7 +57,7 @@ export const useApi = () => {
     })
 
   const ssrPost = <T = unknown>(key: string, url: string, body?: BodyInit | Record<string, any> | null) =>
-    useFetch<ResponseModel<T>>(url, {
+    useFetch<ResponseViewModel<T>>(url, {
       key,
       method: 'POST',
       body,
@@ -74,14 +74,14 @@ export const useApi = () => {
   // ── 事件處理器系列 ───────────────────────────────────────────────────
 
   const get = <T = unknown>(url: string, query?: Record<string, unknown>) =>
-    $fetch<ResponseModel<T>>(url, {
+    $fetch<ResponseViewModel<T>>(url, {
       method: 'GET',
       query,
       headers: buildHeaders(),
     })
 
   const post = <T = unknown>(url: string, body?: BodyInit | Record<string, any> | null) =>
-    $fetch<ResponseModel<T>>(url, {
+    $fetch<ResponseViewModel<T>>(url, {
       method: 'POST',
       body,
       headers: buildHeaders(),

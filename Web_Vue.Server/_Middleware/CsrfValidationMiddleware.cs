@@ -39,7 +39,7 @@ public class CsrfValidationMiddleware(RequestDelegate next)
                 || !string.Equals(tokenFromHeader, tokenFromCookie, StringComparison.Ordinal))
             {
                 context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-                await context.Response.WriteAsJsonAsync(new ResponseViewModel
+                await context.Response.WriteAsJsonAsync(new ResponseViewModel<object>
                 {
                     Status  = ResultType.Fail,
                     Message = "CSRF 驗證失敗，請重新整理頁面後再試"

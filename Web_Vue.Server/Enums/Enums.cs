@@ -1,8 +1,6 @@
 namespace Web_Vue.Server.Enums;
 
-/// <summary>
-/// 回應結果類型
-/// </summary>
+/// <summary> 回應結果類型 </summary>
 public enum ResultType
 {
     /// <summary> 成功 </summary>
@@ -33,12 +31,15 @@ public enum UserProfileStatus
 /// <summary> 登入失敗類型 </summary>
 public enum LoginFailType
 {
-    /// <summary> 驗證失敗（帳密錯誤、帳號停用、驗證碼錯誤等一般失敗） </summary>
-    驗證失敗 = 1,
+    /// <summary> 驗證失敗（帳密錯誤、帳號停用、驗證碼錯誤等一般失敗）</summary>
+    [Description("Txt_驗證失敗")]
+    AuthFailed = 1,
 
     /// <summary> 密碼已過期，需重設 </summary>
-    密碼過期 = 2,
+    [Description("Txt_密碼過期")]
+    PasswordExpired = 2,
 
     /// <summary> 使用暫時密碼，需更換密碼 </summary>
-    使用暫時密碼 = 3,
+    [Description("Txt_使用暫時密碼")]
+    UseTempPassword = 3,
 }

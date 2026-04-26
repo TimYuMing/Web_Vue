@@ -9,7 +9,9 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "i18n:gen": "node scripts/generate-i18n.mjs"
+    "i18n:gen": "node scripts/generate-i18n.mjs",
+    "models:gen": "node scripts/generate-models.mjs",
+    "sync": "node scripts/generate-i18n.mjs && node scripts/generate-models.mjs"
   },
   "dependencies": {
     "@nuxtjs/i18n": "^10.2.4",

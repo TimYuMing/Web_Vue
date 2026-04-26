@@ -1,6 +1,11 @@
-import type { ResponseModel } from '~/types/api'
-import { ResultType } from '~/types/api'
-import type { AuthSession, CaptchaModel, LoginFailData } from '~/types/auth'
+import { ResultType } from '~/types/enum'
+import type { 
+  ResponseViewModel, 
+  AuthSessionViewModel, 
+  CaptchaViewModel, 
+  LoginFailViewModel, 
+  LoginRequestViewModel 
+} from '~/types/viewmodel'
 
 /**
  * 登入 / 登出 / Session 管理 composable
@@ -11,23 +16,23 @@ export const useAuth = () => {
   const api = useApi()
 
   /** 目前登入的 session（null = 未登入） */
-  const session = useState<AuthSession | null>('auth:session', () => null)
+  const session = useState<AuthSessionViewModel | null>('auth:session', () => null)
 
   /** 是否已登入 */
   const isLoggedIn = computed(() => session.value !== null)
 
   /** 當前使用者 */
-  const user = computed(() => session.value?.user ?? null)
+  const user = computed(() => session.value?.User ?? null)
 
   /** 權限清單 */
-  const permissions = computed(() => session.value?.permissions ?? [])
+  const permissions = computed(() => session.value?.Permissions ?? [])
 
   // ── 取得圖形驗證碼 ──
 
-  async function fetchCaptcha(): Promise<CaptchaModel | null> {
+  async function fetchCaptcha(): Promise<CaptchaViewModel | null> {
     try {
-      const res = await api.get<CaptchaModel>('/api/auth/captcha')
-      return res.status === ResultType.Success ? res.data : null
+      const res = await api.get<CaptchaViewModel>('/api/auth/captcha')
+      return res.Status === ResultType.Success.Value ? res.Data : null
     }
     catch {
       return null
@@ -36,17 +41,12 @@ export const useAuth = () => {
 
   // ── 登入 ──
 
-  async function login(payload: {
-    account: string
-    password: string
-    challengeId: string
-    validCode: string
-  }): Promise<ResponseModel<LoginFailData>> {
-    const res = await api.post<LoginFailData>('/api/auth/login', payload)
+  async function login(payload: LoginRequestViewModel): Promise<ResponseViewModel<LoginFailViewModel>> {
+    const res = await api.post<LoginFailViewModel>('/api/auth/login', payload)
 
-    if (res.status === ResultType.Success) {
-      // 登入成功 → data 是 AuthSession
-      session.value = res.data as unknown as AuthSession
+    if (res.Status === ResultType.Success.Value) {
+      // 登入成功 → Data 是 AuthSessionViewModel
+      session.value = res.Data as unknown as AuthSessionViewModel
     }
 
     return res
@@ -69,9 +69,9 @@ export const useAuth = () => {
 
   async function fetchSession(): Promise<boolean> {
     try {
-      const res = await api.get<AuthSession>('/api/auth/me')
-      if (res.status === ResultType.Success && res.data) {
-        session.value = res.data
+      const res = await api.get<AuthSessionViewModel>('/api/auth/me')
+      if (res.Status === ResultType.Success.Value && res.Data) {
+        session.value = res.Data
         return true
       }
     }
@@ -86,9 +86,9 @@ export const useAuth = () => {
 
   async function refresh(): Promise<boolean> {
     try {
-      const res = await api.post<AuthSession>('/api/auth/refresh')
-      if (res.status === ResultType.Success && res.data) {
-        session.value = res.data
+      const res = await api.post<AuthSessionViewModel>('/api/auth/refresh')
+      if (res.Status === ResultType.Success.Value && res.Data) {
+        session.value = res.Data
         return true
       }
     }

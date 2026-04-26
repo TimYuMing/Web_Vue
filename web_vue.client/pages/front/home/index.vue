@@ -1,6 +1,6 @@
 <script setup lang="ts">
-  import { ResultType } from '~/types/api'
-  import type { ResponseModel } from '~/types/api'
+  import type { ResponseViewModel } from '~/types/viewmodel'
+  import { ResultType } from '~/types/enum'
 
   definePageMeta({
     layout: 'front',
@@ -21,7 +21,7 @@
 
   const testName = ref('')
   const loading = ref(false)
-  const result = ref<ResponseModel<{ echo: string; timestamp: string }> | null>(null)
+  const result = ref<ResponseViewModel<{ echo: string; timestamp: string }> | null>(null)
 
   async function handleTestPost() {
     loading.value = true
@@ -72,18 +72,18 @@
       </div>
 
       <!-- 回應結果 -->
-      <div v-if="result" class="api-test-result" :class="result.status === ResultType.Success ? 'is-success' : 'is-fail'">
-        <p><strong>Status：</strong>{{ result.status === ResultType.Success ? 'Success' : 'Fail' }}</p>
-        <p><strong>Message：</strong>{{ result.message }}</p>
-        <template v-if="result.status === ResultType.Success && result.data">
-          <p><strong>Echo：</strong>{{ result.data.echo }}</p>
-          <p><strong>Timestamp：</strong>{{ result.data.timestamp }}</p>
+      <div v-if="result" class="api-test-result" :class="result.Status === ResultType.Success.Value ? 'is-success' : 'is-fail'">
+        <p><strong>Status：</strong>{{ result.Status === ResultType.Success.Value ? 'Success' : 'Fail' }}</p>
+        <p><strong>Message：</strong>{{ result.Message }}</p>
+        <template v-if="result.Status === ResultType.Success.Value && result.Data">
+          <p><strong>Echo：</strong>{{ result.Data.echo }}</p>
+          <p><strong>Timestamp：</strong>{{ result.Data.timestamp }}</p>
         </template>
-        <template v-if="result.errorList?.length">
+        <template v-if="result.ErrorList?.length">
           <p><strong>Errors：</strong></p>
           <ul>
-            <li v-for="err in result.errorList" :key="err.key">
-              {{ err.key }}：{{ err.errorTextList.join(', ') }}
+            <li v-for="err in result.ErrorList" :key="err.Key">
+              {{ err.Key }}：{{ err.ErrorTextList.join(', ') }}
             </li>
           </ul>
         </template>

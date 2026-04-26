@@ -9,14 +9,14 @@ public class TestController : BaseController
     /// <param name="request">請求模型</param>
     /// <param name="validator">注入的驗證器</param>
     [HttpPost]
-    public async Task<ActionResult<ResponseViewModel>> Post(
+    public async Task<ActionResult<ResponseViewModel<object>>> Post(
         [FromBody] TestRequestViewModel request,
         [FromServices] IValidator<TestRequestViewModel> validator)
     {
         var result = await validator.ValidateAsync(request);
 
         if (!result.IsValid)
-            return Ok(new ResponseViewModel
+            return Ok(new ResponseViewModel<object>
             {
                 Status = ResultType.Fail,
                 Message = Resx["Txt_操作失敗"],
@@ -30,7 +30,7 @@ public class TestController : BaseController
                     .ToList()
             });
 
-        return Ok(new ResponseViewModel
+        return Ok(new ResponseViewModel<object>
         {
             Status = ResultType.Success,
             Message = Resx["Txt_操作成功"],

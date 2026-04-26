@@ -17,7 +17,12 @@ builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+// 停用 camelCase，讓 JSON 屬性名稱與 C# 類別一致（PascalCase）
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.PropertyNamingPolicy = null;
+    });
 
 // 多語系：從 Resources/SharedResource.{locale}.resx 讀取
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
@@ -154,6 +159,29 @@ app.UseRequestLocalization(new RequestLocalizationOptions()
 app.UseAuthentication();
 app.UseMiddleware<CsrfValidationMiddleware>();
 app.UseAuthorization();
+
+// ── 安全 HTTP Headers（API 回應） ─────────────────────────────────────────────
+// HTML 頁面的 CSP 由 Nuxt server/middleware/security.ts 管理
+// 此處針對 /api/** JSON 回應補上必要的安全 headers
+app.Use(async (context, next) =>
+{
+    context.Response.Headers["X-Content-Type-Options"]  = "nosniff";
+    context.Response.Headers["X-Frame-Options"]         = "DENY";
+    context.Response.Headers["Referrer-Policy"]         = "strict-origin-when-cross-origin";
+    context.Response.Headers["X-XSS-Protection"]        = "0";
+    context.Response.Headers["Permissions-Policy"]      =
+        "camera=(), microphone=(), geolocation=(), payment=(), usb=()";
+    context.Response.Headers.Remove("X-Powered-By");
+    context.Response.Headers.Remove("Server");
+
+    if (!app.Environment.IsDevelopment())
+    {
+        context.Response.Headers["Strict-Transport-Security"] =
+            "max-age=63072000; includeSubDomains; preload";
+    }
+
+    await next();
+});
 
 app.MapControllers();
 app.MapFallbackToFile("/index.html");

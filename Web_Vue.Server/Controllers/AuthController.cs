@@ -1,4 +1,4 @@
-﻿using System.IdentityModel.Tokens.Jwt;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Cryptography;
 using Microsoft.Extensions.Options;
 using Web_Vue.Server.Services;
@@ -43,7 +43,7 @@ public class AuthController(
         var validation = await validator.ValidateAsync(request);
         if (!validation.IsValid)
         {
-            return Fail(data: new LoginFailViewModel { FailType = LoginFailType.驗證失敗 },
+            return Fail(data: new LoginFailViewModel { FailType = LoginFailType.AuthFailed },
                         errorList: ValidationTool.BuildErrorList(validation));
         }
 
@@ -55,14 +55,14 @@ public class AuthController(
         if (userInfo!.IsTemplatePassword)
         {
             return Fail(_resx["RedirectMessage_ValidCode_請進行重設密碼"].Value,
-                        data: new LoginFailViewModel { FailType = LoginFailType.使用暫時密碼, RedirectPath = "/change-password" });
+                        data: new LoginFailViewModel { FailType = LoginFailType.UseTempPassword, RedirectPath = "/change-password" });
         }
 
         // ── 密碼過期 ──
         if (userInfo.ValidPasswordExpireTime.HasValue && userInfo.ValidPasswordExpireTime.Value < DateTime.Now)
         {
             return Fail(_resx["RedirectMessage_ValidCode_密碼已過期，請進行重設密碼申請"].Value,
-                        data: new LoginFailViewModel { FailType = LoginFailType.密碼過期, RedirectPath = "/forget-password" });
+                        data: new LoginFailViewModel { FailType = LoginFailType.PasswordExpired, RedirectPath = "/forget-password" });
         }
 
         // ── 登入成功 ──

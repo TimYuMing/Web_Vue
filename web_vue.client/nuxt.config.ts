@@ -64,6 +64,27 @@ function generateI18nLocales(): void {
 generateI18nLocales()
 
 // =============================================================
+// generate-models：解析後端 C# Enum / ViewModel → 生成前端 TypeScript
+// 讓前後端 Model 保持同步，在 dev / build 時自動執行
+// =============================================================
+function generateModels(): void {
+  const scriptPath = path.resolve(process.cwd(), 'scripts/generate-models.mjs')
+  if (!fs.existsSync(scriptPath)) {
+    console.warn('[generate-models] 腳本不存在，跳過')
+    return
+  }
+  const result = child_process.spawnSync(process.execPath, [scriptPath], {
+    stdio: 'inherit',
+    env: process.env,
+  })
+  if (result.status !== 0) {
+    console.error('[generate-models] 執行失敗')
+  }
+}
+
+generateModels()
+
+// =============================================================
 
 // 與原本 vite.config.js 相同的邏輯：讀取 dotnet dev-certs 產生的憑證
 const baseFolder =
