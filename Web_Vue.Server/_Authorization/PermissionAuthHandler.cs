@@ -14,7 +14,6 @@ public class PermissionAuthHandler(
     CurrentUserService _currentUserService
 ) : AuthorizationHandler<PermissionAuthRequirement>
 {
-    /// <inheritdoc/>
     protected override async Task<Task> HandleRequirementAsync(
         AuthorizationHandlerContext context, PermissionAuthRequirement requirement)
     {

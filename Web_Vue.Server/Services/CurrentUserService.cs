@@ -7,8 +7,7 @@ namespace Web_Vue.Server.Services;
 public class CurrentUserService(IHttpContextAccessor _httpContextAccessor)
 {
     /// <summary> 登入者完整資訊（從 JWT Claims 反序列化），未登入時為 null </summary>
-    public UserInfoViewModel? UserInfo { get; } =
-        UserInfoTool.GetUserInfo(_httpContextAccessor.HttpContext?.User);
+    public UserInfoViewModel? UserInfo { get; } = UserInfoTool.GetUserInfo(_httpContextAccessor.HttpContext?.User);
 
     /// <summary> 是否已通過身份驗證 </summary>
     public bool IsAuthenticated => UserInfo?.IsLogin ?? false;

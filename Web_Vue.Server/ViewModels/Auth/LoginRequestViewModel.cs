@@ -1,7 +1,7 @@
 namespace Web_Vue.Server.ViewModels.Auth;
 
 /// <summary> 登入請求 DTO </summary>
-public class LoginRequest
+public class LoginRequestViewModel
 {
     /// <summary> 使用者帳號 </summary>
     public string Account { get; set; } = string.Empty;

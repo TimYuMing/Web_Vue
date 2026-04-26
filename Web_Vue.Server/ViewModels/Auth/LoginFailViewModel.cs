@@ -1,7 +1,7 @@
 namespace Web_Vue.Server.ViewModels.Auth;
 
 /// <summary> 登入失敗的附加資訊（放在 ResponseViewModel.Data） </summary>
-public class LoginFailData
+public class LoginFailViewModel
 {
     /// <summary> 失敗類型 </summary>
     public LoginFailType FailType { get; set; }

@@ -91,9 +91,7 @@ public class PermissionService(
             // ── 子節點（葉節點 const 欄位）處理 ──
             foreach (var field in ac.GetFields(BindingFlags.Public | BindingFlags.Static))
             {
-                var childAttr = field.GetCustomAttributes<PermissionAttribute>()
-                                     .FirstOrDefault()
-                                 ?? new PermissionAttribute(string.Empty, 0);
+                var childAttr = field.GetCustomAttributes<PermissionAttribute>().FirstOrDefault() ?? new PermissionAttribute(string.Empty, 0);
 
                 var childCode = field.GetValue(null)?.ToString();
                 if (string.IsNullOrEmpty(childCode)) continue;
@@ -136,23 +134,25 @@ public class PermissionService(
         }
 
         // ── 刪除 DB 中已不存在於 PermissionCodes 的節點 ──
-        var toDelete = existPermissionList
-            .Where(p => !parentCodeDic.ContainsKey(p.Code) && !childCodeList.Contains(p.Code))
-            .ToList();
+        var toDelete = existPermissionList.Where(p => !parentCodeDic.ContainsKey(p.Code) && !childCodeList.Contains(p.Code)).ToList();
 
         foreach (var dp in toDelete)
         {
             // 先移除關聯的角色權限紀錄
             var pirList = await _permissionInRoleRe.FindAllByBId(dp.ID).ToListAsync();
             if (pirList.Count > 0)
+            {
                 _context.PermissionInRole.RemoveRange(pirList);
+            }
 
             // 軟刪除權限（實體已被追蹤，直接標記）
             dp.IsDelete = true;
         }
 
         if (toDelete.Count > 0)
+        {
             await _context.SaveChangesAsync();
+        }
 
         await transaction.CommitAsync();
 

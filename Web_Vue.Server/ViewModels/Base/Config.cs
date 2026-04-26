@@ -30,4 +30,15 @@ public static class Config
 
     /// <summary> 登入失敗次數快取 Key 前綴 </summary>
     public const string AttemptCacheKeyPrefix = "ApiLoginAttempt";
+
+    // ===================== Cookie 名稱 =====================
+
+    /// <summary> JWT 驗證 Cookie 名稱（HttpOnly，用於伺服器端驗證） </summary>
+    public const string JwtCookieName = "jwt-token";
+
+    /// <summary> CSRF Token Cookie 名稱（非 HttpOnly，由 JS 讀取後帶入 Header） </summary>
+    public const string CsrfCookieName = "csrf-token";
+
+    /// <summary> CSRF Token Header 名稱（JS 每次請求時帶入此 Header） </summary>
+    public const string CsrfHeaderName = "X-CSRF-Token";
 }

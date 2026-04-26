@@ -6,7 +6,7 @@ using Web_Vue.Server.ViewModels.Auth;
 namespace Web_Vue.Server.Validators;
 
 /// <summary> 登入請求驗證器 </summary>
-public class LoginRequestValidator : AbstractValidator<LoginRequest>
+public class LoginRequestValidator : AbstractValidator<LoginRequestViewModel>
 {
     public LoginRequestValidator(
         IStringLocalizer<SharedResource> _resx,

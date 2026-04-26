@@ -1,7 +1,6 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Cryptography;
 using Microsoft.Extensions.Options;
-using Web_Vue.Server._Middleware;
 using Web_Vue.Server.Services;
 using Web_Vue.Server.Tools;
 using Web_Vue.Server.ViewModels.Auth;
@@ -18,8 +17,6 @@ public class AuthController(
     CurrentUserService _currentUserService,
     IStringLocalizer<SharedResource> _resx) : BaseController
 {
-    private const string JwtCookieName = "jwt";
-
     private int ExpireMinutes => _appOptions.Value.JwtSettings.ExpireMinutes;
 
     // ===================== 驗證碼 =====================
@@ -39,14 +36,14 @@ public class AuthController(
     [AllowAnonymous]
     [HttpPost("login")]
     public async Task<IActionResult> Login(
-        [FromBody] LoginRequest request,
-        [FromServices] IValidator<LoginRequest> validator)
+        [FromBody] LoginRequestViewModel request,
+        [FromServices] IValidator<LoginRequestViewModel> validator)
     {
         // ── 輸入驗證（含必填、圖形驗證碼、鎖定、帳密、帳號狀態） ──
         var validation = await validator.ValidateAsync(request);
         if (!validation.IsValid)
         {
-            return Fail(data: new LoginFailData { FailType = LoginFailType.驗證失敗 },
+            return Fail(data: new LoginFailViewModel { FailType = LoginFailType.驗證失敗 },
                         errorList: ValidationTool.BuildErrorList(validation));
         }
 
@@ -58,14 +55,14 @@ public class AuthController(
         if (userInfo!.IsTemplatePassword)
         {
             return Fail(_resx["RedirectMessage_ValidCode_請進行重設密碼"].Value,
-                        data: new LoginFailData { FailType = LoginFailType.使用暫時密碼, RedirectPath = "/change-password" });
+                        data: new LoginFailViewModel { FailType = LoginFailType.使用暫時密碼, RedirectPath = "/change-password" });
         }
 
         // ── 密碼過期 ──
         if (userInfo.ValidPasswordExpireTime.HasValue && userInfo.ValidPasswordExpireTime.Value < DateTime.Now)
         {
             return Fail(_resx["RedirectMessage_ValidCode_密碼已過期，請進行重設密碼申請"].Value,
-                        data: new LoginFailData { FailType = LoginFailType.密碼過期, RedirectPath = "/forget-password" });
+                        data: new LoginFailViewModel { FailType = LoginFailType.密碼過期, RedirectPath = "/forget-password" });
         }
 
         // ── 登入成功 ──
@@ -161,7 +158,7 @@ public class AuthController(
         var expires = new DateTimeOffset(expiresUtc, TimeSpan.Zero);
 
         // JWT — HttpOnly，JS 無法讀取，防 XSS
-        Response.Cookies.Append(JwtCookieName, jwtToken, new CookieOptions
+        Response.Cookies.Append(Config.JwtCookieName, jwtToken, new CookieOptions
         {
             HttpOnly = true,
             Secure = isHttps,
@@ -172,7 +169,7 @@ public class AuthController(
 
         // CSRF Token — 非 HttpOnly，由 JS 讀取後放入請求 Header
         var csrfToken = Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
-        Response.Cookies.Append(CsrfValidationMiddleware.CookieName, csrfToken, new CookieOptions
+        Response.Cookies.Append(Config.CsrfCookieName, csrfToken, new CookieOptions
         {
             HttpOnly = false,
             Secure = isHttps,
@@ -185,9 +182,9 @@ public class AuthController(
     /// <summary> 清除 JWT Cookie 及 CSRF Cookie </summary>
     private void ClearAuthCookies()
     {
-        Response.Cookies.Delete(JwtCookieName,
+        Response.Cookies.Delete(Config.JwtCookieName,
             new CookieOptions { Path = "/", SameSite = SameSiteMode.Strict });
-        Response.Cookies.Delete(CsrfValidationMiddleware.CookieName,
+        Response.Cookies.Delete(Config.CsrfCookieName,
             new CookieOptions { Path = "/", SameSite = SameSiteMode.Strict });
     }
 }

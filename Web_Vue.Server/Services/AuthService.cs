@@ -9,7 +9,6 @@ public class AuthService(CacheTool _cacheTool)
 {
     // ===================== 登入 Challenge（圖形驗證碼） =====================
 
-    private const string ChallengeCacheKeyPrefix = Config.ChallengeCacheKeyPrefix;
     private static readonly TimeSpan ChallengeTtl = TimeSpan.FromMinutes(Config.CaptchaTtlMinutes);
 
     /// <summary> 建立新的驗證碼 Challenge </summary>
@@ -18,7 +17,7 @@ public class AuthService(CacheTool _cacheTool)
         var challengeId = Guid.NewGuid().ToString("N");
         var code = CaptchaTool.GenerateCode(Config.CaptchaCodeLength);
 
-        _cacheTool.SetCache(BuildChallengeKey(challengeId), code, ChallengeTtl);
+        _cacheTool.SetCache($"{Config.ChallengeCacheKeyPrefix}_{challengeId}", code, ChallengeTtl);
 
         return new CaptchaViewModel
         {
@@ -36,7 +35,7 @@ public class AuthService(CacheTool _cacheTool)
             return false;
         }
 
-        var key = BuildChallengeKey(challengeId);
+        var key = $"{Config.ChallengeCacheKeyPrefix}_{challengeId}";
         var storedCode = _cacheTool.GetCache<string>(key);
 
         if (string.IsNullOrWhiteSpace(storedCode))
@@ -52,8 +51,6 @@ public class AuthService(CacheTool _cacheTool)
 
         return isValid;
     }
-
-    private static string BuildChallengeKey(string challengeId) => $"{ChallengeCacheKeyPrefix}_{challengeId}";
 
     // ===================== 登入失敗鎖定 =====================
 

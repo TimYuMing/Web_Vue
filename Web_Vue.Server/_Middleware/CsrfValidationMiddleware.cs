@@ -1,4 +1,5 @@
 using System.Net;
+using Web_Vue.Server.ViewModels.Base;
 
 namespace Web_Vue.Server._Middleware;
 
@@ -6,8 +7,8 @@ namespace Web_Vue.Server._Middleware;
 /// CSRF 防護中介層 — Double Submit Cookie Pattern
 ///
 /// 除安全方法 (GET/HEAD/OPTIONS) 及豁免路徑外，所有請求均需同時攜帶：
-///   Cookie : X-CSRF-TOKEN  (非 HttpOnly，由 JS 讀取)
-///   Header : X-CSRF-Token  (由 JS 在每次請求時帶入)
+///   Cookie : <see cref="Config.CsrfCookieName"/>  (非 HttpOnly，由 JS 讀取)
+///   Header : <see cref="Config.CsrfHeaderName"/>  (由 JS 在每次請求時帶入)
 /// 兩值必須完全相同，否則回傳 403。
 ///
 /// 豁免路徑（使用者尚未登入，無法取得 CSRF Token）：
@@ -16,11 +17,6 @@ namespace Web_Vue.Server._Middleware;
 /// </summary>
 public class CsrfValidationMiddleware(RequestDelegate next)
 {
-    /// <summary> 寫入 Cookie 的名稱（非 HttpOnly） </summary>
-    public const string CookieName = "X-CSRF-TOKEN";
-
-    /// <summary> 請求 Header 的名稱 </summary>
-    public const string HeaderName = "X-CSRF-Token";
 
     private static readonly HashSet<string> SafeMethods = new(StringComparer.OrdinalIgnoreCase)
         { "GET", "HEAD", "OPTIONS" };
@@ -35,8 +31,8 @@ public class CsrfValidationMiddleware(RequestDelegate next)
 
         if (!SafeMethods.Contains(method) && !ExemptPaths.Contains(path))
         {
-            var tokenFromHeader = context.Request.Headers[HeaderName].FirstOrDefault();
-            var tokenFromCookie = context.Request.Cookies[CookieName];
+            var tokenFromHeader = context.Request.Headers[Config.CsrfHeaderName].FirstOrDefault();
+            var tokenFromCookie = context.Request.Cookies[Config.CsrfCookieName];
 
             if (string.IsNullOrWhiteSpace(tokenFromHeader)
                 || string.IsNullOrWhiteSpace(tokenFromCookie)
